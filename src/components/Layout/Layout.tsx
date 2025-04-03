@@ -2,6 +2,7 @@ import { ReactElement } from "react";
 import { ICategory } from "@/models/common/types";
 import Header from "@/components/Header";
 import styles from "./styles.module.scss";
+import { inter } from "@/utils/fonts/fonts";
 
 interface IProps {
   categories: ICategory[];
@@ -10,7 +11,7 @@ interface IProps {
 
 export default function Layout({ categories, children }: IProps) {
   return (
-    <main className={`${styles.root}`}>
+    <main className={`${styles.root} ${inter.className}`}>
       <Header categories={categories} />
       {children}
       <footer>Footer</footer>
