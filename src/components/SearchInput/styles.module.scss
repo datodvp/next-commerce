@@ -1,0 +1,37 @@
+@use "@/styles/_colors" as *;
+
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .search {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    background-color: $primary-gray;
+    border-radius: 5px;
+
+    input {
+      width: 270px;
+      z-index: 10;
+      font-size: medium;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 10px;
+    }
+    input:focus {
+      background: transparent;
+      outline: none;
+      cursor: text;
+    }
+
+    .icon {
+      position: absolute;
+      right: 10px;
+    }
+  }
+}

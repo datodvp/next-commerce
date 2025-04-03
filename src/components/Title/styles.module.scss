@@ -1,0 +1,12 @@
+.root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: large;
+
+  .title {
+    padding: 15px;
+  }
+}
