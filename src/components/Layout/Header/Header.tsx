@@ -1,9 +1,9 @@
 import { ICategory } from "@/models/common/types";
 import styles from "./styles.module.scss";
-import SearchInput from "@/components/SearchInput";
+import SearchInput from "@/components/Layout/SearchInput";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Title from "@/components/Title";
+import Title from "@/components/Layout/Title";
 
 interface IProps {
   categories: ICategory[];
