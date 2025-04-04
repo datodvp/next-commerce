@@ -7,7 +7,12 @@ const SearchInput = () => {
     <section className={styles.root}>
       <div className={styles.search}>
         <input type="text" placeholder="Search" />
-        <FontAwesomeIcon className={styles.icon} icon={faMagnifyingGlass} />
+        <FontAwesomeIcon
+          width={16}
+          height={16}
+          className={styles.icon}
+          icon={faMagnifyingGlass}
+        />
       </div>
     </section>
   );

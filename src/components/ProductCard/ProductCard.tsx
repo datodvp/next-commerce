@@ -22,6 +22,7 @@ const ProductCard = ({ product, key }: IProps) => {
         <div className={styles.category}>{product.category.name}</div>
         <span className={styles.title}>{product.title}</span>
         <span className={styles.price}>${product.price}</span>
+        <div className={styles.addToCart}>Add to cart</div>
       </div>
     </section>
   );
