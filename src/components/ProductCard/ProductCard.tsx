@@ -1,16 +1,16 @@
 import { IProduct } from "@/models/common/types";
 import Image from "next/image";
 import styles from "./styles.module.scss";
+import AddToCart from "./AddToCart";
 
 interface IProps {
   product: IProduct;
-  key: number;
 }
-const ProductCard = ({ product, key }: IProps) => {
+const ProductCard = ({ product }: IProps) => {
   return (
-    <section className={styles.root} key={key}>
+    <section className={styles.root}>
       <div className={styles.product}>
-        <div className={styles.image}>
+        <div className={styles.imageContainer}>
           <Image
             src={product.images[0]}
             alt={product.title}
@@ -22,7 +22,7 @@ const ProductCard = ({ product, key }: IProps) => {
         <div className={styles.category}>{product.category.name}</div>
         <span className={styles.title}>{product.title}</span>
         <span className={styles.price}>${product.price}</span>
-        <div className={styles.addToCart}>Add to cart</div>
+        <AddToCart product={product} />
       </div>
     </section>
   );

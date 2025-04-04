@@ -25,6 +25,10 @@
     opacity: 0.7;
     // text-decoration: underline;
   }
+
+  &:active {
+    opacity: 1;
+  }
 }
 
 .fixedHeader {
