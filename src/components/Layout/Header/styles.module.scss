@@ -1,5 +1,12 @@
 @use "@/styles/colors" as *;
-.root {
+
+.header {
+  background-color: white;
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-bottom: 15px;
+  margin-bottom: 50px;
+  padding-top: 20px;
 }
 
 .categories {
@@ -21,7 +28,18 @@
 }
 
 .fixedHeader {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 9;
   display: flex;
+  align-items: center;
+  justify-items: center;
   flex-direction: row;
   flex-wrap: wrap;
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-bottom: 15px;
+  padding-top: 15px;
+  border-bottom: 1px solid lightgray;
 }

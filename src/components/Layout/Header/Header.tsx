@@ -13,27 +13,29 @@ const Header = ({ categories }: IProps) => {
   const pathname = usePathname();
 
   return (
-    <header>
+    <>
       <section className={styles.fixedHeader}>
         <Title />
         <SearchInput />
       </section>
-      <section className={styles.categories}>
-        {categories?.slice(0, 6).map((category) => {
-          const isActive = pathname.includes(category.slug);
+      <section className={styles.header}>
+        <section className={styles.categories}>
+          {categories?.slice(0, 6).map((category) => {
+            const isActive = pathname.includes(category.slug);
 
-          return (
-            <Link
-              href={`/categories/${category.slug}`}
-              className={`${styles.category} ${isActive && styles.active}`}
-              key={category.id}
-            >
-              <span>{category.name}</span>
-            </Link>
-          );
-        })}
+            return (
+              <Link
+                href={`/categories/${category.slug}`}
+                className={`${styles.category} ${isActive && styles.active}`}
+                key={category.id}
+              >
+                <span>{category.name}</span>
+              </Link>
+            );
+          })}
+        </section>
       </section>
-    </header>
+    </>
   );
 };
 

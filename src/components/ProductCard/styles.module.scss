@@ -1,0 +1,29 @@
+.root {
+  width: 250px;
+  height: 390px;
+  border: 1px solid lightgray;
+
+  .product {
+    display: grid;
+    row-gap: 8px;
+    padding: 20px;
+
+    .image {
+      margin: auto;
+      display: flex;
+      justify-items: center;
+    }
+
+    .category {
+      color: lightgray;
+    }
+
+    .title {
+      min-height: 2.3em;
+    }
+
+    .price {
+      font-weight: 700;
+    }
+  }
+}

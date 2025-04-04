@@ -7,5 +7,5 @@ export const akatab = Akatab({
 
 export const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "900"],
+  weight: ["400", "700"],
 });

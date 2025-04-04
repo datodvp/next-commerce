@@ -1,6 +1,8 @@
+import ProductCard from "@/components/ProductCard";
 import { ICategory, IProduct } from "@/models/common/types";
 import { fetchCategories } from "@/requests/fetchCategories";
 import { GetServerSideProps } from "next";
+import styles from "./styles.module.scss";
 
 interface IProps {
   products: IProduct[];
@@ -9,9 +11,9 @@ interface IProps {
 const Category = ({ products }: IProps) => {
   return (
     <section>
-      <div>
+      <div className={styles.productsList}>
         {products.map((product) => (
-          <div key={product.id}>{product.title}</div>
+          <ProductCard product={product} key={product.id} />
         ))}
       </div>
     </section>
