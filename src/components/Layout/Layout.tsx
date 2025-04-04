@@ -14,7 +14,6 @@ export default function Layout({ categories, children }: IProps) {
     <main className={`${styles.root} ${inter.className}`}>
       <Header categories={categories} />
       {children}
-      <footer>Footer</footer>
     </main>
   );
 }
