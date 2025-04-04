@@ -7,10 +7,15 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*",
+        hostname: "**", // This allows any hostname
         port: "",
         pathname: "/**",
-        search: "",
+      },
+      {
+        protocol: "http",
+        hostname: "**", // This allows any hostname for HTTP as well
+        port: "",
+        pathname: "/**",
       },
     ],
   },
