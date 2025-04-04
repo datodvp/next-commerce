@@ -1,17 +1,31 @@
-import { ICategory } from "@/models/common/types";
+import { ICategory, IProduct } from "@/models/common/types";
 import { GetServerSideProps } from "next";
-import { fetchCategories } from "@/requests/fetchCategories";
+import { requestCategories } from "@/requests/requestCategories";
+import ProductList from "@/components/ProductList";
+import { requestProducts } from "@/requests/requestProducts";
 
-const Home = () => {
-  return <div>Next app!</div>;
+interface IProps {
+  categories: ICategory[];
+  products: IProduct[];
+}
+
+const Home = ({ products }: IProps) => {
+  return (
+    <section>
+      <ProductList products={products} />
+    </section>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const categories: ICategory[] = await fetchCategories();
+  const categories: ICategory[] = await requestCategories.fetchAllCategories();
+
+  const products: IProduct[] = await requestProducts.fetchAllProducts();
 
   return {
     props: {
       categories: categories,
+      products: products,
     },
   };
 };
