@@ -3,6 +3,8 @@ import styles from "./styles.module.scss";
 import { faBasketShopping, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { IProduct } from "@/models/common/types";
 import { useState } from "react";
+import { useAppDispatch } from "@/stores";
+import { addProduct } from "@/stores/cart";
 
 interface IProps {
   product: IProduct;
@@ -10,11 +12,12 @@ interface IProps {
 
 const AddToCart = ({ product }: IProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
 
   const addToCart = () => {
     setIsLoading(true);
     setTimeout(() => {
-      console.log(product);
+      dispatch(addProduct(product));
       setIsLoading(false);
     }, 500);
   };

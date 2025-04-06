@@ -4,6 +4,9 @@ import SearchInput from "@/components/Layout/SearchInput";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Title from "@/components/Layout/Title";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { useAppSelector } from "@/stores";
 
 interface IProps {
   categories: ICategory[];
@@ -11,30 +14,44 @@ interface IProps {
 
 const Header = ({ categories }: IProps) => {
   const pathname = usePathname();
+  const cartStore = useAppSelector((state) => state.cart);
 
   return (
     <>
       <section className={styles.fixedHeader}>
-        <Title />
-        <SearchInput />
+        <div className={styles.searchContainer}>
+          <Title />
+          <SearchInput />
+        </div>
+        <Link href={"/cart"} className={styles.cartContainer}>
+          <FontAwesomeIcon
+            icon={faCartShopping}
+            width={25}
+            height={25}
+            fontSize={30}
+          />
+          <span>{cartStore.total}</span>
+        </Link>
       </section>
-      <section className={styles.header}>
-        <section className={styles.categories}>
-          {categories?.slice(0, 6).map((category) => {
-            const isActive = pathname.includes(category.slug);
+      <>
+        <section className={styles.header}>
+          <section className={styles.categories}>
+            {categories?.slice(0, 6).map((category) => {
+              const isActive = pathname.includes(category.slug);
 
-            return (
-              <Link
-                href={`/categories/${category.slug}`}
-                className={`${styles.category} ${isActive && styles.active}`}
-                key={category.id}
-              >
-                <span>{category.name}</span>
-              </Link>
-            );
-          })}
+              return (
+                <Link
+                  href={`/categories/${category.slug}`}
+                  className={`${styles.category} ${isActive && styles.active}`}
+                  key={category.id}
+                >
+                  <span>{category.name}</span>
+                </Link>
+              );
+            })}
+          </section>
         </section>
-      </section>
+      </>
     </>
   );
 };
