@@ -1,0 +1,55 @@
+.root {
+  border: 1px solid lightgray;
+  display: flex;
+  gap: 20px;
+  width: 50%;
+  padding: 10px;
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 70%;
+
+    .title {
+      font-weight: bold;
+    }
+
+    .price {
+      font-weight: bold;
+    }
+    .addition {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .actions {
+        display: flex;
+        align-items: end;
+        justify-content: end;
+        gap: 10px;
+        font-size: 30px;
+
+        .action {
+          border: 1px solid black;
+          border-radius: 5px;
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: white; /* Initial background color */
+          color: black; /* Initial text color */
+          transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+          line-height: 200%;
+          user-select: none;
+
+          &:hover {
+            cursor: pointer;
+            background-color: black; /* Background color on hover */
+            color: white; /* Text color on hover */
+          }
+        }
+      }
+    }
+  }
+}

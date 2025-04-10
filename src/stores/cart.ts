@@ -1,7 +1,7 @@
 import { IProduct } from "@/models/common/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface IProductWithQuantity extends IProduct {
+export interface IProductWithQuantity extends IProduct {
   quantity: number;
 }
 
@@ -33,8 +33,27 @@ const cartSlice = createSlice({
         });
       }
     },
+    removeProduct(state, action: PayloadAction<IProduct>) {
+      const product = state.products.find(
+        (product) => product.id === action.payload.id
+      );
+
+      if (!product) return;
+
+      const productIndex = state.products.findIndex(
+        (product) => product.id === action.payload.id
+      );
+
+      state.total--;
+
+      if (product.quantity > 1) {
+        product.quantity--;
+      } else {
+        state.products.splice(productIndex, 1);
+      }
+    },
   },
 });
 
-export const { addProduct } = cartSlice.actions;
+export const { addProduct, removeProduct } = cartSlice.actions;
 export default cartSlice.reducer;
