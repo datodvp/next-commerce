@@ -1,6 +1,18 @@
 .root {
-  display: grid;
-  grid-gap: 1px;
-  width: 80%;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 10%;
+  padding-right: 10%;
   margin: auto;
+  .products {
+    display: grid;
+    grid-gap: 1px;
+    width: 100%;
+  }
+
+  .sum {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
 }

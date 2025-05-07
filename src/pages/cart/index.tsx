@@ -11,9 +11,14 @@ const Cart = () => {
 
   return (
     <section className={styles.root}>
-      {products.map((product) => (
-        <CartProduct product={product} key={product.id} />
-      ))}
+      <div className={styles.products}>
+        {products.map((product) => (
+          <CartProduct product={product} key={product.id} />
+        ))}
+      </div>
+      <div className={styles.sum}>
+        Total Price: <b> ${cartStore.totalPrice}</b>
+      </div>
     </section>
   );
 };

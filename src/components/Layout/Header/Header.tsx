@@ -31,7 +31,7 @@ const Header = ({ categories }: IProps) => {
             fontSize={30}
             color="#3d7277"
           />
-          {!!cartStore.total && <span>{cartStore.total}</span>}
+          {!!cartStore.totalProducts && <span>{cartStore.totalProducts}</span>}
         </Link>
       </section>
       <>

@@ -7,12 +7,14 @@ export interface IProductWithQuantity extends IProduct {
 
 interface IState {
   products: IProductWithQuantity[];
-  total: number;
+  totalProducts: number;
+  totalPrice: number;
 }
 
 const initialState: IState = {
   products: [],
-  total: 0,
+  totalProducts: 0,
+  totalPrice: 0,
 };
 
 const cartSlice = createSlice({
@@ -23,7 +25,8 @@ const cartSlice = createSlice({
       const product = state.products.find(
         (product) => product.id === action.payload.id
       );
-      state.total++;
+      state.totalProducts++;
+      state.totalPrice += action.payload.price;
       if (product) {
         product.quantity++;
       } else {
@@ -44,7 +47,8 @@ const cartSlice = createSlice({
         (product) => product.id === action.payload.id
       );
 
-      state.total--;
+      state.totalProducts--;
+      state.totalPrice -= product.price;
 
       if (product.quantity > 1) {
         product.quantity--;
