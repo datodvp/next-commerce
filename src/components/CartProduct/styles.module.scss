@@ -1,3 +1,5 @@
+@use "@/styles/colors" as *;
+
 .root {
   border: 1px solid lightgray;
   display: flex;
@@ -12,7 +14,7 @@
     width: 70%;
 
     .title {
-      font-weight: bold;
+      //
     }
 
     .price {
@@ -20,35 +22,19 @@
     }
     .addition {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      .actions {
-        display: flex;
-        align-items: end;
-        justify-content: end;
-        gap: 10px;
-        font-size: 30px;
+      justify-content: center;
+      width: 100px;
+      border: 1px solid $primary-gray;
+      text-align: center;
+      .action {
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+      }
 
-        .action {
-          border: 1px solid black;
-          border-radius: 5px;
-          width: 30px;
-          height: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background-color: white; /* Initial background color */
-          color: black; /* Initial text color */
-          transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
-          line-height: 200%;
-          user-select: none;
-
-          &:hover {
-            cursor: pointer;
-            background-color: black; /* Background color on hover */
-            color: white; /* Text color on hover */
-          }
-        }
+      .quantity {
+        width: 20px;
       }
     }
   }

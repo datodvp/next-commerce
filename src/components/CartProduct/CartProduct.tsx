@@ -29,15 +29,13 @@ const CartProduct = ({ product }: IProps): React.ReactElement => {
         <span className={styles.title}>{product.title}</span>
         <span className={styles.price}>$ {product.price}</span>
         <div className={styles.addition}>
-          <span>Quantity: {product.quantity}</span>
-          <div className={styles.actions}>
-            <span onClick={() => addToCart()} className={styles.action}>
-              +
-            </span>
-            <span onClick={() => removeFromCart()} className={styles.action}>
-              -
-            </span>
-          </div>
+          <button onClick={() => addToCart()} className={styles.action}>
+            +
+          </button>
+          <span className={styles.quantity}>{product.quantity}</span>
+          <button onClick={() => removeFromCart()} className={styles.action}>
+            -
+          </button>
         </div>
       </div>
     </div>

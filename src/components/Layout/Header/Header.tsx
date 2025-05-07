@@ -29,8 +29,9 @@ const Header = ({ categories }: IProps) => {
             width={25}
             height={25}
             fontSize={30}
+            color="#3d7277"
           />
-          <span>{cartStore.total}</span>
+          {!!cartStore.total && <span>{cartStore.total}</span>}
         </Link>
       </section>
       <>

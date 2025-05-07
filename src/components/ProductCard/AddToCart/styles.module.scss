@@ -17,5 +17,10 @@
     &:active {
       opacity: 1;
     }
+
+    .spinner {
+      position: absolute;
+      scale: 2;
+    }
   }
 }
