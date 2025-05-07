@@ -1,7 +1,10 @@
+@use "@/styles/colors" as *;
+
 .root {
-  width: 250px;
-  height: 390px;
-  border: 1px solid lightgray;
+  border: 1px solid $primary-gray;
+  box-sizing: content-box;
+  width: 100%;
+  height: 100%;
   cursor: pointer;
 
   .product {
@@ -19,7 +22,7 @@
     }
 
     .category {
-      color: lightgray;
+      color: $secondary-black;
     }
 
     .title {

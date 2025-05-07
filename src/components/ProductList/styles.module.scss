@@ -1,7 +1,7 @@
 .root {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 1px;
   width: 80%;
   margin: auto;
 }
