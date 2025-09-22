@@ -1,6 +1,6 @@
 import { addProduct, IProductWithQuantity, removeProduct } from '@/stores/cart'
 import Image from 'next/image'
-import styles from './styles.module.scss'
+import styles from './CartProduct.module.scss'
 import { useAppDispatch } from '@/stores'
 
 interface IProps {

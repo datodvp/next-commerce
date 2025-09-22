@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import styles from './styles.module.scss'
+import styles from './AddToCart.module.scss'
 import {
   faBasketShopping,
   faSpinner,

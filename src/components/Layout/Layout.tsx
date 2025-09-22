@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 import { ICategory } from '@/models/common/types'
 import Header from '@/components/Layout/Header'
-import styles from './styles.module.scss'
+import styles from './Layout.module.scss'
 import { inter } from '@/utils/fonts/fonts'
 
 interface IProps {

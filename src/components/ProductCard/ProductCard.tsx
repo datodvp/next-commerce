@@ -1,6 +1,6 @@
 import { IProduct } from '@/models/common/types'
 import Image from 'next/image'
-import styles from './styles.module.scss'
+import styles from './ProductCard.module.scss'
 import AddToCart from './AddToCart'
 
 interface IProps {

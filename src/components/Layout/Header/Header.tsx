@@ -1,5 +1,5 @@
 import { ICategory } from '@/models/common/types'
-import styles from './styles.module.scss'
+import styles from './Header.module.scss'
 import SearchInput from '@/components/Layout/SearchInput'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'

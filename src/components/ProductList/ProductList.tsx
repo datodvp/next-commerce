@@ -1,6 +1,6 @@
 import { IProduct } from '@/models/common/types'
 import ProductCard from '../ProductCard'
-import styles from './styles.module.scss'
+import styles from './ProductList.module.scss'
 
 interface IProps {
   products: IProduct[]

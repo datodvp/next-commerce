@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import styles from './styles.module.scss'
+import styles from './Title.module.scss'
 import { akatab } from '@/utils/fonts/fonts'
 
 const Title = () => {
