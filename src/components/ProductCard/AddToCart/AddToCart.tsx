@@ -1,34 +1,34 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import styles from "./styles.module.scss";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import styles from './styles.module.scss'
 import {
   faBasketShopping,
   faSpinner,
   faCircleCheck,
-} from "@fortawesome/free-solid-svg-icons";
-import { IProduct } from "@/models/common/types";
-import { useState } from "react";
-import { useAppDispatch } from "@/stores";
-import { addProduct } from "@/stores/cart";
-import { useProductInBasket } from "@/helpers/useProductInBasket";
+} from '@fortawesome/free-solid-svg-icons'
+import { IProduct } from '@/models/common/types'
+import { useState } from 'react'
+import { useAppDispatch } from '@/stores'
+import { addProduct } from '@/stores/cart'
+import { useProductInBasket } from '@/helpers/useProductInBasket'
 
 interface IProps {
-  product: IProduct;
+  product: IProduct
 }
 
 const AddToCart = ({ product }: IProps) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const isInCart = useProductInBasket(product);
+  const isInCart = useProductInBasket(product)
 
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
 
   const addToCart = () => {
-    setIsLoading(true);
+    setIsLoading(true)
     setTimeout(() => {
-      dispatch(addProduct(product));
-      setIsLoading(false);
-    }, 500);
-  };
+      dispatch(addProduct(product))
+      setIsLoading(false)
+    }, 500)
+  }
 
   return (
     <div className={styles.root}>
@@ -54,7 +54,7 @@ const AddToCart = ({ product }: IProps) => {
         )}
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default AddToCart;
+export default AddToCart

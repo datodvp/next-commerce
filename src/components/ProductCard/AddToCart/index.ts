@@ -1,3 +1,3 @@
-import AddToCart from "./AddToCart";
+import AddToCart from './AddToCart'
 
-export default AddToCart;
+export default AddToCart

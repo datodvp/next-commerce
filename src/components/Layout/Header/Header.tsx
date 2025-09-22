@@ -1,20 +1,20 @@
-import { ICategory } from "@/models/common/types";
-import styles from "./styles.module.scss";
-import SearchInput from "@/components/Layout/SearchInput";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import Title from "@/components/Layout/Title";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import { useAppSelector } from "@/stores";
+import { ICategory } from '@/models/common/types'
+import styles from './styles.module.scss'
+import SearchInput from '@/components/Layout/SearchInput'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import Title from '@/components/Layout/Title'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
+import { useAppSelector } from '@/stores'
 
 interface IProps {
-  categories: ICategory[];
+  categories: ICategory[]
 }
 
 const Header = ({ categories }: IProps) => {
-  const pathname = usePathname();
-  const cartStore = useAppSelector((state) => state.cart);
+  const pathname = usePathname()
+  const cartStore = useAppSelector((state) => state.cart)
 
   return (
     <>
@@ -23,7 +23,7 @@ const Header = ({ categories }: IProps) => {
           <Title />
           <SearchInput />
         </div>
-        <Link href={"/cart"} className={styles.cartContainer}>
+        <Link href={'/cart'} className={styles.cartContainer}>
           <FontAwesomeIcon
             icon={faCartShopping}
             width={25}
@@ -38,7 +38,7 @@ const Header = ({ categories }: IProps) => {
         <section className={styles.header}>
           <section className={styles.categories}>
             {categories?.slice(0, 6).map((category) => {
-              const isActive = pathname.includes(category.slug);
+              const isActive = pathname.includes(category.slug)
 
               return (
                 <Link
@@ -48,13 +48,13 @@ const Header = ({ categories }: IProps) => {
                 >
                   <span>{category.name}</span>
                 </Link>
-              );
+              )
             })}
           </section>
         </section>
       </>
     </>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

@@ -1,21 +1,21 @@
-import { addProduct, IProductWithQuantity, removeProduct } from "@/stores/cart";
-import Image from "next/image";
-import styles from "./styles.module.scss";
-import { useAppDispatch } from "@/stores";
+import { addProduct, IProductWithQuantity, removeProduct } from '@/stores/cart'
+import Image from 'next/image'
+import styles from './styles.module.scss'
+import { useAppDispatch } from '@/stores'
 
 interface IProps {
-  product: IProductWithQuantity;
+  product: IProductWithQuantity
 }
 const CartProduct = ({ product }: IProps): React.ReactElement => {
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
 
   const addToCart = () => {
-    dispatch(addProduct(product));
-  };
+    dispatch(addProduct(product))
+  }
 
   const removeFromCart = () => {
-    dispatch(removeProduct(product));
-  };
+    dispatch(removeProduct(product))
+  }
 
   return (
     <div className={styles.root}>
@@ -39,7 +39,7 @@ const CartProduct = ({ product }: IProps): React.ReactElement => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CartProduct;
+export default CartProduct

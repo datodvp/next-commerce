@@ -1,9 +1,9 @@
-import { IProduct } from "@/models/common/types";
-import ProductCard from "../ProductCard";
-import styles from "./styles.module.scss";
+import { IProduct } from '@/models/common/types'
+import ProductCard from '../ProductCard'
+import styles from './styles.module.scss'
 
 interface IProps {
-  products: IProduct[];
+  products: IProduct[]
 }
 
 const ProductList = ({ products }: IProps) => {
@@ -15,7 +15,7 @@ const ProductList = ({ products }: IProps) => {
         ))}
       </section>
     </>
-  );
-};
+  )
+}
 
-export default ProductList;
+export default ProductList

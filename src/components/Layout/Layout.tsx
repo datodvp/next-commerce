@@ -1,12 +1,12 @@
-import { ReactElement } from "react";
-import { ICategory } from "@/models/common/types";
-import Header from "@/components/Layout/Header";
-import styles from "./styles.module.scss";
-import { inter } from "@/utils/fonts/fonts";
+import { ReactElement } from 'react'
+import { ICategory } from '@/models/common/types'
+import Header from '@/components/Layout/Header'
+import styles from './styles.module.scss'
+import { inter } from '@/utils/fonts/fonts'
 
 interface IProps {
-  categories: ICategory[];
-  children: ReactElement;
+  categories: ICategory[]
+  children: ReactElement
 }
 
 export default function Layout({ categories, children }: IProps) {
@@ -15,5 +15,5 @@ export default function Layout({ categories, children }: IProps) {
       <Header categories={categories} />
       {children}
     </main>
-  );
+  )
 }

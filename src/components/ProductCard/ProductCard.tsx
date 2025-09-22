@@ -1,10 +1,10 @@
-import { IProduct } from "@/models/common/types";
-import Image from "next/image";
-import styles from "./styles.module.scss";
-import AddToCart from "./AddToCart";
+import { IProduct } from '@/models/common/types'
+import Image from 'next/image'
+import styles from './styles.module.scss'
+import AddToCart from './AddToCart'
 
 interface IProps {
-  product: IProduct;
+  product: IProduct
 }
 const ProductCard = ({ product }: IProps) => {
   return (
@@ -25,7 +25,7 @@ const ProductCard = ({ product }: IProps) => {
         <AddToCart product={product} />
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default ProductCard;
+export default ProductCard
