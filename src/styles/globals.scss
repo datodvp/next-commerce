@@ -1,3 +1,5 @@
+@use '@/styles/colors' as *;
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -7,4 +9,9 @@
 a,
 button {
   all: unset;
+}
+
+#nprogress .bar {
+  background: $primary-green !important;
+  height: 5px !important;
 }
