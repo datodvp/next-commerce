@@ -43,7 +43,7 @@ const Header = ({ categories }: IProps) => {
               return (
                 <Link
                   href={`/categories/${category.slug}`}
-                  className={`${styles.category} ${isActive && styles.active}`}
+                  className={`${styles.category} ${isActive ? styles.active : ''}`}
                   key={category.id}
                 >
                   <span>{category.name}</span>
