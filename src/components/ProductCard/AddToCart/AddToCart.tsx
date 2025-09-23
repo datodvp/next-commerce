@@ -9,7 +9,7 @@ import { IProduct } from '@/models/common/types'
 import { useState } from 'react'
 import { useAppDispatch } from '@/stores'
 import { addProduct } from '@/stores/cart'
-import { useProductInBasket } from '@/helpers/useProductInBasket'
+import { useProductInBasket } from '@/hooks/useProductInBasket'
 
 interface IProps {
   product: IProduct
