@@ -22,7 +22,8 @@ const AddToCart = ({ product }: IProps) => {
 
   const dispatch = useAppDispatch()
 
-  const addToCart = () => {
+  const addToCart = (e: React.MouseEvent) => {
+    e.preventDefault()
     setIsLoading(true)
     setTimeout(() => {
       dispatch(addProduct(product))
