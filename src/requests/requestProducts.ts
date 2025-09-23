@@ -11,9 +11,9 @@ export const requestProducts = {
       return []
     }
   },
-  fetchProductsBySlug: async (slug: string) => {
+  fetchProductBySlug: async (slug: string) => {
     try {
-      const { data } = await api.get<IProduct[]>(`/products/${slug}`)
+      const { data } = await api.get<IProduct>(`/products/slug/${slug}`)
       return data
     } catch (error) {
       console.error('Error fetching products by slug:', error)
