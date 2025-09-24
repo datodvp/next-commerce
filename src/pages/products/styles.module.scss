@@ -1,0 +1,54 @@
+@use '@/styles/colors' as *;
+
+.root {
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+.productDetails {
+  display: flex;
+  gap: 70px;
+}
+
+.image {
+  border-radius: 16px;
+}
+
+.smallerImagesContainer {
+  margin-top: 5px;
+  .smallerImage {
+    border-radius: 16px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+
+  .blurredImage {
+    opacity: 0.5;
+  }
+}
+
+.title {
+}
+
+.category {
+  color: rgb(172, 166, 166);
+}
+
+.priceContainer {
+  display: inline-block;
+  margin-top: 50px;
+  padding: 10px;
+  border-radius: 16px;
+  background-color: #3d727710;
+  color: $primary-green;
+
+  font-size: 35px;
+  font-weight: 900;
+
+  .dollarSymbol {
+    float: inline-start;
+    font-size: 25px;
+    margin-right: 3px;
+    color: rgb(137, 136, 136);
+  }
+}
