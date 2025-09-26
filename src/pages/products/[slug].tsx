@@ -32,6 +32,7 @@ const Product = ({ product }: IProps) => {
                   height={700}
                   className={styles.image}
                   priority
+                  key={image}
                   style={{
                     display: currentPreviewImage === image ? 'block' : 'none',
                   }}
