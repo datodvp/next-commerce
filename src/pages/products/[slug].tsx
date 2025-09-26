@@ -37,6 +37,7 @@ const Product = ({ product }: IProps) => {
                   alt={product.title}
                   width={150}
                   height={150}
+                  key={image}
                   className={`${styles.smallerImage} ${image !== currentPreviewImage && styles.blurredImage}`}
                   onMouseEnter={() => updatePreviewImage(image)}
                 />
