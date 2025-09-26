@@ -22,13 +22,23 @@ const Product = ({ product }: IProps) => {
     <main className={styles.root}>
       <section className={styles.productDetails}>
         <div>
-          <Image
-            src={currentPreviewImage}
-            alt={product.title}
-            width={700}
-            height={700}
-            className={styles.image}
-          />
+          <div className={styles.previewContainer}>
+            {product.images.map((image) => {
+              return (
+                <Image
+                  src={image}
+                  alt={product.title}
+                  width={700}
+                  height={700}
+                  className={styles.image}
+                  priority
+                  style={{
+                    display: currentPreviewImage === image ? 'block' : 'none',
+                  }}
+                />
+              )
+            })}
+          </div>
           <div className={styles.smallerImagesContainer}>
             {product.images.map((image) => {
               return (
@@ -37,8 +47,8 @@ const Product = ({ product }: IProps) => {
                   alt={product.title}
                   width={150}
                   height={150}
-                  priority
                   key={image}
+                  priority
                   className={`${styles.smallerImage} ${image !== currentPreviewImage && styles.blurredImage}`}
                   onMouseEnter={() => updatePreviewImage(image)}
                 />

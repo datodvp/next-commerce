@@ -10,6 +10,15 @@
   gap: 70px;
 }
 
+.previewContainer {
+  width: 700px;
+  height: 700px;
+
+  img {
+    position: absolute;
+  }
+}
+
 .image {
   border-radius: 16px;
 }
