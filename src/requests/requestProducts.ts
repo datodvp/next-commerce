@@ -5,6 +5,7 @@ export const requestProducts = {
   fetchAllProducts: async () => {
     try {
       const { data } = await api.get<IProduct[]>('/products')
+      console.log(data)
       return data
     } catch (error) {
       console.error('Error fetching products:', error)

@@ -20,7 +20,7 @@ const CartProduct = ({ product }: IProps): React.ReactElement => {
   return (
     <div className={styles.root}>
       <Image
-        src={product.images[0]}
+        src={product.images[0].url}
         alt={product.title}
         width={150}
         height={150}

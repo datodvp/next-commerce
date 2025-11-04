@@ -18,10 +18,11 @@ const Home = ({ products }: IProps) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const categories: ICategory[] = await requestCategories.fetchAllCategories()
+  const categories: ICategory[] | null =
+    await requestCategories.fetchAllCategories()
 
-  const products: IProduct[] = await requestProducts.fetchAllProducts()
-
+  const products: IProduct[] | null = await requestProducts.fetchAllProducts()
+  // console.log(products)
   return {
     props: {
       categories: categories,

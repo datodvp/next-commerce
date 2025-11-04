@@ -16,14 +16,14 @@ const ProductCard = ({ product }: IProps) => {
           <div className={styles.product}>
             <div className={styles.imageContainer}>
               <Image
-                src={product.images[0]}
+                src={product.images[0].url}
                 alt={product.title}
                 width={170}
                 height={170}
               />
             </div>
 
-            <div className={styles.category}>{product.category.name}</div>
+            <div className={styles.category}>{product.category?.name}</div>
             <span className={styles.title}>{product.title}</span>
             <span className={styles.price}>${product.price}</span>
             <AddToCart product={product} />

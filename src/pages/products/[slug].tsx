@@ -12,7 +12,7 @@ interface IProps {
 
 const Product = ({ product }: IProps) => {
   const [currentPreviewImage, setCurrentPreviewImage] = useState<string>(
-    product.images[0],
+    product.images[0].url,
   )
 
   const updatePreviewImage = (image: string) => {
@@ -26,15 +26,16 @@ const Product = ({ product }: IProps) => {
             {product.images.map((image) => {
               return (
                 <Image
-                  src={image}
+                  src={image.url}
                   alt={product.title}
                   width={700}
                   height={700}
                   className={styles.image}
                   priority
-                  key={image}
+                  key={image.id}
                   style={{
-                    display: currentPreviewImage === image ? 'block' : 'none',
+                    display:
+                      currentPreviewImage === image.url ? 'block' : 'none',
                   }}
                 />
               )
@@ -44,14 +45,14 @@ const Product = ({ product }: IProps) => {
             {product.images.map((image) => {
               return (
                 <Image
-                  src={image}
+                  src={image.url}
                   alt={product.title}
                   width={150}
                   height={150}
-                  key={image}
+                  key={image.id}
                   priority
-                  className={`${styles.smallerImage} ${image !== currentPreviewImage && styles.blurredImage}`}
-                  onMouseEnter={() => updatePreviewImage(image)}
+                  className={`${styles.smallerImage} ${image.url !== currentPreviewImage && styles.blurredImage}`}
+                  onMouseEnter={() => updatePreviewImage(image.url)}
                 />
               )
             })}
@@ -59,7 +60,7 @@ const Product = ({ product }: IProps) => {
         </div>
         <div>
           <h1 className={styles.title}>{product.title}</h1>
-          <h3 className={styles.category}>{product.category.name}</h3>
+          {/* <h3 className={styles.category}>{product.category.name}</h3> */}
 
           <div className={styles.priceContainer}>
             <span className={styles.dollarSymbol}>$</span>
@@ -75,7 +76,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const categories: ICategory[] = await requestCategories.fetchAllCategories()
 
   const { slug } = context.params as { slug: string }
-  console.log(slug)
+
   const product = await requestProducts.fetchProductBySlug(slug)
   console.log('product', product)
   return {

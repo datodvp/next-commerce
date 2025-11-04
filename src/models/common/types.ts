@@ -5,7 +5,7 @@ export interface IProduct {
   price: number
   description: string
   category: ICategory
-  images: string[]
+  images: IImage[]
 }
 
 export interface ICategory {
@@ -13,6 +13,11 @@ export interface ICategory {
   name: string
   slug: string
   image: string
+}
+
+export interface IImage {\
+  id: number;
+  url: string;
 }
 
 export interface IUser {
