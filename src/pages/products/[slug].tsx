@@ -73,7 +73,8 @@ const Product = ({ product }: IProps) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const categories: ICategory[] = await requestCategories.fetchAllCategories()
+  const categories: ICategory[] | null =
+    await requestCategories.fetchAllCategories()
 
   const { slug } = context.params as { slug: string }
 

@@ -20,13 +20,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { params } = ctx
   const { slug } = params as { slug: string }
 
-  const categories: ICategory[] = await requestCategories.fetchAllCategories()
+  const categories: ICategory[] | null =
+    await requestCategories.fetchAllCategories()
 
-  const currentCategory = categories.find((category) => category.slug === slug)!
+  const currentCategory: ICategory | null =
+    categories?.find((category) => category.slug === slug) || null
 
-  const products: IProduct[] = await requestProducts.fetchProductsByCategory(
-    currentCategory.id,
-  )
+  const products: IProduct[] =
+    (await requestProducts.fetchProductsByCategory(currentCategory?.id || 1)) ||
+    null
 
   return {
     props: {
