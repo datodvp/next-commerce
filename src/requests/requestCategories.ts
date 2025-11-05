@@ -3,7 +3,6 @@ import { api } from './api'
 
 export const requestCategories = {
   fetchAllCategories: async () => {
-    return null
     try {
       const { data } = await api.get<ICategory[]>('/categories')
       return data

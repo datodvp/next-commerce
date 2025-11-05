@@ -27,7 +27,7 @@ const CartProduct = ({ product }: IProps): React.ReactElement => {
       />
       <div className={styles.info}>
         <span className={styles.title}>{product.title}</span>
-        <span className={styles.price}>$ {product.price}</span>
+        <span className={styles.price}>$ {product.price.toFixed(2)}</span>
         <div className={styles.addition}>
           <button onClick={() => addToCart()} className={styles.action}>
             +

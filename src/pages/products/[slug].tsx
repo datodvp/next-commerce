@@ -60,11 +60,11 @@ const Product = ({ product }: IProps) => {
         </div>
         <div>
           <h1 className={styles.title}>{product.title}</h1>
-          {/* <h3 className={styles.category}>{product.category.name}</h3> */}
+          <h3 className={styles.category}>{product.category.name}</h3>
 
           <div className={styles.priceContainer}>
             <span className={styles.dollarSymbol}>$</span>
-            <span>123.5</span>
+            <span>{product.price.toFixed(2)}</span>
           </div>
         </div>
       </section>
@@ -73,13 +73,12 @@ const Product = ({ product }: IProps) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const categories: ICategory[] | null =
-    await requestCategories.fetchAllCategories()
+  const categories: ICategory[] = await requestCategories.fetchAllCategories()
 
   const { slug } = context.params as { slug: string }
 
   const product = await requestProducts.fetchProductBySlug(slug)
-  console.log('product', product)
+
   return {
     props: {
       categories,

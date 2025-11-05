@@ -1,4 +1,4 @@
-import { ICategory, IProduct } from '@/models/common/types'
+import { IProduct } from '@/models/common/types'
 import { requestCategories } from '@/requests/requestCategories'
 import { GetServerSideProps } from 'next'
 import ProductList from '@/components/ProductList'
@@ -20,21 +20,25 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { params } = ctx
   const { slug } = params as { slug: string }
 
-  const categories: ICategory[] | null =
-    await requestCategories.fetchAllCategories()
+  const categories = await requestCategories.fetchAllCategories()
 
-  const currentCategory: ICategory | null =
-    categories?.find((category) => category.slug === slug) || null
+  const currentCategory = categories.find((category) => category.slug === slug)
 
-  const products: IProduct[] =
-    (await requestProducts.fetchProductsByCategory(currentCategory?.id || 1)) ||
-    null
+  if (!currentCategory) {
+    return {
+      notFound: true,
+    }
+  }
+
+  const products = await requestProducts.fetchProductsByCategory(
+    currentCategory.id,
+  )
 
   return {
     props: {
-      categories: categories,
+      categories,
       params: slug,
-      products: products,
+      products,
     },
   }
 }

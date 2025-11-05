@@ -25,7 +25,7 @@ const ProductCard = ({ product }: IProps) => {
 
             <div className={styles.category}>{product.category?.name}</div>
             <span className={styles.title}>{product.title}</span>
-            <span className={styles.price}>${product.price}</span>
+            <span className={styles.price}>${product.price.toFixed(2)}</span>
             <AddToCart product={product} />
           </div>
         </section>

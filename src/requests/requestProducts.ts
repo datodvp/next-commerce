@@ -5,7 +5,7 @@ export const requestProducts = {
   fetchAllProducts: async () => {
     try {
       const { data } = await api.get<IProduct[]>('/products')
-      console.log(data)
+
       return data
     } catch (error) {
       console.error('Error fetching products:', error)
@@ -24,7 +24,7 @@ export const requestProducts = {
   fetchProductsByCategory: async (categoryId: number) => {
     try {
       const { data } = await api.get<IProduct[]>(
-        `/categories/${categoryId}/products`,
+        `/products/category/${categoryId}`,
       )
       return data
     } catch (error) {
