@@ -251,7 +251,7 @@
   }
 
   &.homeLink {
-    background-color: darken($primary-green, 10%);
+    background-color: $primary-green;
     font-weight: 600;
     margin-bottom: 1rem;
     position: relative;
@@ -276,13 +276,13 @@
 
   &:hover,
   &.active {
-    background-color: darken($primary-green, 8%);
+    background-color: $primary-green;
     color: $text-white;
   }
 
   &.homeLink:hover,
   &.homeLink.active {
-    background-color: darken($primary-green, 15%);
+    background-color: $primary-green;
   }
 
   &:active {

@@ -51,7 +51,7 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: darken($primary-green, 10%);
+    background-color: $primary-green;
   }
 }
 

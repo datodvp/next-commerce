@@ -16,11 +16,11 @@
     height: auto;
 
     &:hover {
-      background-color: darken($primary-green, 10%);
+      background-color: $primary-green;
     }
 
     &:active {
-      background-color: darken($primary-green, 15%) !important;
+      background-color: $primary-green !important;
     }
 
     &:focus:not(:focus-visible):not(:active) {

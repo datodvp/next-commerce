@@ -54,7 +54,7 @@
   color: white;
 
   &:hover:not(:disabled) {
-    background-color: darken($primary-green, 10%);
+    background-color: $primary-green;
   }
 }
 
@@ -63,7 +63,7 @@
   color: white;
 
   &:hover:not(:disabled) {
-    background-color: darken($primary-red, 10%);
+    background-color: $primary-red;
   }
 }
 

@@ -45,7 +45,7 @@
   margin-left: 8px;
 
   &:hover {
-    background-color: darken($primary-red, 10%);
+    background-color: $primary-red;
   }
 }
 
@@ -54,7 +54,7 @@
   color: white;
 
   &:hover {
-    background-color: darken($primary-green, 10%);
+    background-color: $primary-green;
   }
 }
 
@@ -148,7 +148,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
   &:hover {
-    background-color: darken($primary-red, 10%);
+    background-color: $primary-red;
     transform: scale(1.1);
   }
 }
@@ -176,7 +176,7 @@
   white-space: nowrap;
 
   &:hover {
-    background-color: darken($primary-green, 10%);
+    background-color: $primary-green;
   }
 }
 

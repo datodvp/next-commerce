@@ -24,7 +24,7 @@
     color: white;
 
     &:hover:not(:disabled) {
-      background-color: darken($primary-green, 10%);
+      background-color: $primary-green;
     }
   }
 
@@ -33,7 +33,7 @@
     color: $secondary-black;
 
     &:hover:not(:disabled) {
-      background-color: darken($primary-gray, 10%);
+      background-color: $primary-gray;
     }
   }
 
@@ -42,7 +42,7 @@
     color: white;
 
     &:hover:not(:disabled) {
-      background-color: darken($primary-red, 10%);
+      background-color: $primary-red;
     }
   }
 }

@@ -63,7 +63,7 @@ a {
   @include transition(color);
   
   &:hover {
-    color: darken($primary-green, 10%);
+    color: $primary-green;
   }
   
   &:focus-visible {
