@@ -112,7 +112,7 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: darken($primary-red, 10%);
+    background-color: $primary-red
   }
 
   .icon {
