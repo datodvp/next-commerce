@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { IProduct } from '@/models/common/types'
 import ProductCard from '../ProductCard'
 import styles from './ProductList.module.scss'
@@ -10,7 +11,18 @@ const ProductList = ({ products }: IProps) => {
   if (!products || products.length === 0) {
     return (
       <section className={styles.root}>
-        <p>No products found.</p>
+        <div className={styles.emptyState}>
+          <h2 className={styles.title}>No Products Found</h2>
+          <p className={styles.message}>
+            We couldn&apos;t find any products matching your search.
+          </p>
+          <p className={styles.message}>
+            <Link href="/" className={styles.link}>
+              Browse all products
+            </Link>{' '}
+            or try a different search term.
+          </p>
+        </div>
       </section>
     )
   }

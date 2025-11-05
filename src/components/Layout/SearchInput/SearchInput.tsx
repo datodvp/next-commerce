@@ -39,7 +39,8 @@ const SearchInput = () => {
       )
     } else {
       // Remove search param if empty
-      const { search, ...restQuery } = router.query
+      const restQuery = { ...router.query }
+      delete restQuery.search
       router.push(
         {
           pathname: router.pathname,
@@ -71,7 +72,8 @@ const SearchInput = () => {
           { shallow: true },
         )
       } else {
-        const { search, ...restQuery } = router.query
+        const restQuery = { ...router.query }
+        delete restQuery.search
         router.push(
           {
             pathname: router.pathname,

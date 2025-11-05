@@ -2,6 +2,35 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 1px;
-  width: 80%;
-  margin: auto;
+  width: 100%;
+}
+
+.emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+
+  .message {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .link {
+    color: #3d7277;
+    text-decoration: underline;
+    font-weight: 500;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #2d5a5f;
+    }
+  }
 }

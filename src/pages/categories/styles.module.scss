@@ -1,0 +1,25 @@
+@use '@/styles/colors' as *;
+
+.root {
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+.header {
+  margin-bottom: 2rem;
+  padding: 2rem 0;
+
+  .title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+  }
+}
+

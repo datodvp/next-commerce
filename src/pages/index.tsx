@@ -1,9 +1,11 @@
 import { useMemo } from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { ICategory, IProduct } from '@/models/common/types'
 import { GetServerSideProps } from 'next'
 import { CategoryService, ProductService } from '@/services'
 import ProductList from '@/components/ProductList'
+import styles from './styles.module.scss'
 
 interface IProps {
   categories: ICategory[]
@@ -29,17 +31,40 @@ const Home = ({ products }: IProps) => {
     )
   }, [products, searchQuery])
 
+  const handleClearSearch = () => {
+    router.push('/', undefined, { shallow: true })
+  }
+
   return (
-    <section>
+    <section className={styles.root}>
       {searchQuery && (
-        <div style={{ marginBottom: '1rem', padding: '0 1rem' }}>
-          <p>
-            {filteredProducts.length > 0
-              ? `Found ${filteredProducts.length} product${
-                  filteredProducts.length !== 1 ? 's' : ''
-                } for "${searchQuery}"`
-              : `No products found for "${searchQuery}"`}
-          </p>
+        <div className={styles.searchResults}>
+          {filteredProducts.length > 0 ? (
+            <p className={styles.message}>
+              Found <span className={styles.count}>{filteredProducts.length}</span>{' '}
+              product{filteredProducts.length !== 1 ? 's' : ''} for{' '}
+              <span className={styles.query}>&quot;{searchQuery}&quot;</span>
+            </p>
+          ) : (
+            <div>
+              <p className={`${styles.message} ${styles.noResults}`}>
+                No products found for <span className={styles.query}>&quot;{searchQuery}&quot;</span>
+              </p>
+              <p className={`${styles.message} ${styles.noResultsMessage}`}>
+                Try a different search term or{' '}
+                <Link href="/" className={styles.link} aria-label="Browse all products">
+                  browse all products
+                </Link>
+              </p>
+            </div>
+          )}
+          <button
+            onClick={handleClearSearch}
+            className={styles.clearButton}
+            aria-label="Clear search"
+          >
+            Clear search
+          </button>
         </div>
       )}
       <ProductList products={filteredProducts} />

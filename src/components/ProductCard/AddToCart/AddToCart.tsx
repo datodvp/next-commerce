@@ -37,6 +37,12 @@ const AddToCart = ({ product }: IProps) => {
         disabled={isInCart}
         onClick={addToCart}
         className={styles.addToCart}
+        aria-label={
+          isInCart
+            ? `${product.title} is already in cart`
+            : `Add ${product.title} to cart`
+        }
+        title={isInCart ? 'Already in cart' : 'Add to cart'}
       >
         {isLoading ? (
           <FontAwesomeIcon

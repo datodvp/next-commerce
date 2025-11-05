@@ -1,0 +1,70 @@
+@use '@/styles/colors' as *;
+
+.actions {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+
+  .addToCartButton {
+    padding: 1rem 2rem;
+    background-color: $primary-green;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &:hover:not(:disabled) {
+      background-color: #2d5a5f;
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+
+  .quantitySelector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 0.5rem;
+
+    .quantityButton {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: $primary-green;
+      cursor: pointer;
+      padding: 0.25rem 0.75rem;
+      transition: background-color 0.2s;
+      border-radius: 4px;
+
+      &:hover {
+        background-color: #f0f0f0;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    .quantity {
+      font-size: 1.1rem;
+      font-weight: 600;
+      min-width: 2rem;
+      text-align: center;
+    }
+  }
+}
+

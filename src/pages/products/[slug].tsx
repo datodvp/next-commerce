@@ -4,6 +4,7 @@ import { IProduct } from '@/models/common/types'
 import Image from 'next/image'
 import styles from './styles.module.scss'
 import { useState } from 'react'
+import AddToCartDetail from '@/components/ProductCard/AddToCartDetail'
 
 interface IProps {
   product: IProduct
@@ -64,13 +65,22 @@ const Product = ({ product }: IProps) => {
         <div>
           <h1 className={styles.title}>{product.title}</h1>
           {product.category && (
-            <h3 className={styles.category}>{product.category.name}</h3>
+            <h2 className={styles.category}>{product.category.name}</h2>
           )}
 
           <div className={styles.priceContainer}>
             <span className={styles.dollarSymbol}>$</span>
             <span>{product.price.toFixed(2)}</span>
           </div>
+
+          {product.description && (
+            <div className={styles.description}>
+              <span className={styles.label}>Description</span>
+              <p>{product.description}</p>
+            </div>
+          )}
+
+          <AddToCartDetail product={product} />
         </div>
       </section>
     </main>
