@@ -1,0 +1,169 @@
+@use '@/styles/colors' as *;
+@use '@/styles/_breakpoints' as *;
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+
+  @include respond-below(md) {
+    padding: 16px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease-out;
+  overflow: hidden;
+
+  @include respond-below(md) {
+    border-radius: 10px;
+    max-width: 100%;
+  }
+}
+
+.header {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid $primary-gray;
+
+  @include respond-below(md) {
+    padding: 20px 20px 14px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $secondary-black;
+    margin: 0;
+
+    @include respond-below(md) {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+.body {
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+
+  @include respond-below(md) {
+    padding: 20px;
+  }
+
+  .message {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: $secondary-black;
+    margin: 0;
+
+    @include respond-below(md) {
+      font-size: 0.9375rem;
+      line-height: 1.5;
+    }
+  }
+}
+
+.footer {
+  padding: 16px 24px 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  border-top: 1px solid $primary-gray;
+
+  @include respond-below(md) {
+    padding: 14px 20px 20px;
+    gap: 10px;
+    flex-direction: column-reverse;
+  }
+}
+
+.cancelButton,
+.confirmButton {
+  padding: 6px 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  text-align: center;
+
+  @include respond-below(md) {
+    padding: 12px 20px;
+    font-size: 0.9375rem;
+    width: 100%;
+    min-width: unset;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-green;
+    outline-offset: 2px;
+  }
+}
+
+.cancelButton {
+  background-color: white;
+  color: $secondary-black;
+  border: 1px solid $primary-gray;
+
+  &:hover {
+    background-color: #f8f8f8;
+    border-color: darken($primary-gray, 10%);
+  }
+
+  &:active {
+    background-color: #f0f0f0;
+  }
+}
+
+.confirmButton {
+  background-color: $primary-red;
+  color: white;
+
+  &:hover {
+    background-color: darken($primary-red, 8%);
+  }
+
+  &:active {
+    background-color: darken($primary-red, 12%);
+  }
+}
+
