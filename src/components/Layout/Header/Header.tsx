@@ -2,7 +2,7 @@ import { ICategory } from '@/models/common/types'
 import styles from './Header.module.scss'
 import SearchInput from '@/components/Layout/SearchInput'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useRouter } from 'next/router'
 import Title from '@/components/Layout/Title'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
@@ -13,7 +13,8 @@ interface IProps {
 }
 
 const Header = ({ categories }: IProps) => {
-  const pathname = usePathname()
+  const router = useRouter()
+  const pathname = router.pathname
   const cartStore = useAppSelector((state) => state.cart)
 
   return (
@@ -23,7 +24,7 @@ const Header = ({ categories }: IProps) => {
           <Title />
           <SearchInput />
         </div>
-        <Link href={'/cart'} className={styles.cartContainer}>
+        <Link href="/cart" className={styles.cartContainer}>
           <FontAwesomeIcon
             icon={faCartShopping}
             width={25}
@@ -31,28 +32,28 @@ const Header = ({ categories }: IProps) => {
             fontSize={30}
             color="#3d7277"
           />
-          {!!cartStore.totalProducts && <span>{cartStore.totalProducts}</span>}
+          {cartStore.totalProducts > 0 && (
+            <span>{cartStore.totalProducts}</span>
+          )}
         </Link>
       </section>
-      <>
-        <section className={styles.header}>
-          <section className={styles.categories}>
-            {categories?.slice(0, 6).map((category) => {
-              const isActive = pathname.includes(category.slug)
+      <section className={styles.header}>
+        <section className={styles.categories}>
+          {categories?.slice(0, 6).map((category) => {
+            const isActive = pathname.includes(category.slug)
 
-              return (
-                <Link
-                  href={`/categories/${category.slug}`}
-                  className={`${styles.category} ${isActive ? styles.active : ''}`}
-                  key={category.id}
-                >
-                  <span>{category.name}</span>
-                </Link>
-              )
-            })}
-          </section>
+            return (
+              <Link
+                href={`/categories/${category.slug}`}
+                className={`${styles.category} ${isActive ? styles.active : ''}`}
+                key={category.id}
+              >
+                <span>{category.name}</span>
+              </Link>
+            )
+          })}
         </section>
-      </>
+      </section>
     </>
   )
 }

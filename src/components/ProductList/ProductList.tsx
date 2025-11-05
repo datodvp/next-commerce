@@ -7,14 +7,20 @@ interface IProps {
 }
 
 const ProductList = ({ products }: IProps) => {
-  return (
-    <>
+  if (!products || products.length === 0) {
+    return (
       <section className={styles.root}>
-        {products?.map((product) => (
-          <ProductCard product={product} key={product.id} />
-        ))}
+        <p>No products found.</p>
       </section>
-    </>
+    )
+  }
+
+  return (
+    <section className={styles.root}>
+      {products.map((product) => (
+        <ProductCard product={product} key={product.id} />
+      ))}
+    </section>
   )
 }
 

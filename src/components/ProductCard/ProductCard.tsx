@@ -15,15 +15,21 @@ const ProductCard = ({ product }: IProps) => {
         <section className={styles.root}>
           <div className={styles.product}>
             <div className={styles.imageContainer}>
-              <Image
-                src={product.images[0].url}
-                alt={product.title}
-                width={170}
-                height={170}
-              />
+              {product.images && product.images.length > 0 ? (
+                <Image
+                  src={product.images[0].url}
+                  alt={product.title}
+                  width={170}
+                  height={170}
+                />
+              ) : (
+                <div className={styles.noImage}>No image</div>
+              )}
             </div>
 
-            <div className={styles.category}>{product.category?.name}</div>
+            {product.category && (
+              <div className={styles.category}>{product.category.name}</div>
+            )}
             <span className={styles.title}>{product.title}</span>
             <span className={styles.price}>${product.price.toFixed(2)}</span>
             <AddToCart product={product} />

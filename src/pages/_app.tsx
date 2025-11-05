@@ -2,7 +2,7 @@ import '@/styles/globals.scss'
 import Layout from '@/components/Layout'
 import { AppProps } from 'next/app'
 import { ICategory } from '@/models/common/types'
-import '@/helpers/nprogress'
+import { useNProgress } from '@/helpers/nprogress'
 import { store } from '@/stores'
 import { Provider } from 'react-redux'
 
@@ -14,12 +14,26 @@ interface IProps extends AppProps {
   pageProps: IPageProps
 }
 
+function AppContent({
+  Component,
+  pageProps,
+}: {
+  Component: AppProps['Component']
+  pageProps: IPageProps
+}) {
+  useNProgress()
+
+  return (
+    <Layout {...pageProps}>
+      <Component {...pageProps} />
+    </Layout>
+  )
+}
+
 export default function MyApp({ Component, pageProps }: IProps) {
   return (
     <Provider store={store}>
-      <Layout {...pageProps}>
-        <Component {...pageProps} />
-      </Layout>
+      <AppContent Component={Component} pageProps={pageProps} />
     </Provider>
   )
 }

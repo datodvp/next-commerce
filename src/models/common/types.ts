@@ -23,7 +23,7 @@ export interface IImage {
 export interface IUser {
   id: number
   email: string
-  passsword: string
+  password: string
   name: string
   role: string
   avatar: string

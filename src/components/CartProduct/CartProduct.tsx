@@ -1,3 +1,4 @@
+import React from 'react'
 import { addProduct, IProductWithQuantity, removeProduct } from '@/stores/cart'
 import Image from 'next/image'
 import styles from './CartProduct.module.scss'
@@ -6,6 +7,7 @@ import { useAppDispatch } from '@/stores'
 interface IProps {
   product: IProductWithQuantity
 }
+
 const CartProduct = ({ product }: IProps): React.ReactElement => {
   const dispatch = useAppDispatch()
 
@@ -19,12 +21,16 @@ const CartProduct = ({ product }: IProps): React.ReactElement => {
 
   return (
     <div className={styles.root}>
-      <Image
-        src={product.images[0].url}
-        alt={product.title}
-        width={150}
-        height={150}
-      />
+      {product.images && product.images.length > 0 ? (
+        <Image
+          src={product.images[0].url}
+          alt={product.title}
+          width={150}
+          height={150}
+        />
+      ) : (
+        <div className={styles.noImage}>No image</div>
+      )}
       <div className={styles.info}>
         <span className={styles.title}>{product.title}</span>
         <span className={styles.price}>$ {product.price.toFixed(2)}</span>

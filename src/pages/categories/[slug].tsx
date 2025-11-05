@@ -1,8 +1,7 @@
 import { IProduct } from '@/models/common/types'
-import { requestCategories } from '@/requests/requestCategories'
+import { CategoryService, ProductService } from '@/services'
 import { GetServerSideProps } from 'next'
 import ProductList from '@/components/ProductList'
-import { requestProducts } from '@/requests/requestProducts'
 
 interface IProps {
   products: IProduct[]
@@ -17,29 +16,33 @@ const Category = ({ products }: IProps) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { params } = ctx
-  const { slug } = params as { slug: string }
+  try {
+    const { params } = ctx
+    const { slug } = params as { slug: string }
 
-  const categories = await requestCategories.fetchAllCategories()
+    const categories = await CategoryService.getAll()
 
-  const currentCategory = categories.find((category) => category.slug === slug)
+    const currentCategory = categories.find((category) => category.slug === slug)
 
-  if (!currentCategory) {
+    if (!currentCategory) {
+      return {
+        notFound: true,
+      }
+    }
+
+    const products = await ProductService.getByCategory(currentCategory.id)
+
+    return {
+      props: {
+        categories,
+        products,
+      },
+    }
+  } catch (error) {
+    console.error('Error fetching category data:', error)
     return {
       notFound: true,
     }
-  }
-
-  const products = await requestProducts.fetchProductsByCategory(
-    currentCategory.id,
-  )
-
-  return {
-    props: {
-      categories,
-      params: slug,
-      products,
-    },
   }
 }
 

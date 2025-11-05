@@ -1,14 +1,15 @@
 import { ICategory } from '@/models/common/types'
-import { api } from './api'
+import { api, handleApiError } from './api'
 
 export const requestCategories = {
-  fetchAllCategories: async () => {
+  fetchAllCategories: async (): Promise<ICategory[]> => {
     try {
       const { data } = await api.get<ICategory[]>('/categories')
       return data
     } catch (error) {
-      console.error('Error fetching categories:', error)
-      return []
+      const apiError = handleApiError(error)
+      console.error('Error fetching categories:', apiError.message)
+      throw apiError
     }
   },
 }
