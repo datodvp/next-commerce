@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '@/styles/colors' as *;
 @use '@/styles/_breakpoints' as *;
 
@@ -146,7 +147,7 @@
 
   &:hover {
     background-color: #f8f8f8;
-    border-color: darken($primary-gray, 10%);
+    border-color: color.scale($primary-gray, $lightness: -10%);
   }
 
   &:active {
@@ -159,11 +160,11 @@
   color: white;
 
   &:hover {
-    background-color: darken($primary-red, 8%);
+    background-color: color.scale($primary-red, $lightness: -8%);
   }
 
   &:active {
-    background-color: darken($primary-red, 12%);
+    background-color: color.scale($primary-red, $lightness: -12%);
   }
 }
 

@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 // Enterprise-grade responsive breakpoints
 // Mobile-first approach
 
@@ -55,8 +57,8 @@ $font-sizes: (
 
 // Mixins for responsive breakpoints
 @mixin respond-to($breakpoint) {
-  @if map-has-key($breakpoints, $breakpoint) {
-    $value: map-get($breakpoints, $breakpoint);
+  @if map.has-key($breakpoints, $breakpoint) {
+    $value: map.get($breakpoints, $breakpoint);
     @if $value == 0 {
       @content;
     } @else {
@@ -70,8 +72,8 @@ $font-sizes: (
 }
 
 @mixin respond-below($breakpoint) {
-  @if map-has-key($breakpoints, $breakpoint) {
-    $value: map-get($breakpoints, $breakpoint);
+  @if map.has-key($breakpoints, $breakpoint) {
+    $value: map.get($breakpoints, $breakpoint);
     @if $value > 0 {
       @media (max-width: $value - 1px) {
         @content;
@@ -91,29 +93,29 @@ $font-sizes: (
   padding-right: 1rem;
 
   @include respond-to(sm) {
-    max-width: map-get($container-max-widths, sm);
+    max-width: map.get($container-max-widths, sm);
     padding-left: 1.5rem;
     padding-right: 1.5rem;
   }
 
   @include respond-to(md) {
-    max-width: map-get($container-max-widths, md);
+    max-width: map.get($container-max-widths, md);
   }
 
   @include respond-to(lg) {
-    max-width: map-get($container-max-widths, lg);
+    max-width: map.get($container-max-widths, lg);
     padding-left: 2rem;
     padding-right: 2rem;
   }
 
   @include respond-to(xl) {
-    max-width: map-get($container-max-widths, xl);
+    max-width: map.get($container-max-widths, xl);
     padding-left: 2.5rem;
     padding-right: 2.5rem;
   }
 
   @include respond-to(xxl) {
-    max-width: map-get($container-max-widths, xxl);
+    max-width: map.get($container-max-widths, xxl);
     padding-left: 3rem;
     padding-right: 3rem;
   }
