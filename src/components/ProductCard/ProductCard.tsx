@@ -23,10 +23,10 @@ const ProductCard = ({ product }: IProps) => {
     : null
 
   return (
-    <Link href={`/products/${product.slug}`}>
-      <Hologram>
-        <section className={styles.root}>
-          <div className={styles.product}>
+    <Hologram>
+      <section className={styles.root}>
+        <div className={styles.product}>
+          <Link href={`/products/${product.slug}`} className={styles.cardLink}>
             <div className={styles.imageContainer}>
               {imageUrl ? (
                 <Image
@@ -46,11 +46,13 @@ const ProductCard = ({ product }: IProps) => {
             )}
             <span className={styles.title}>{product.title}</span>
             <span className={styles.price}>${product.price.toFixed(2)}</span>
+          </Link>
+          <div className={styles.addToCartWrapper}>
             <AddToCart product={product} />
           </div>
-        </section>
-      </Hologram>
-    </Link>
+        </div>
+      </section>
+    </Hologram>
   )
 }
 

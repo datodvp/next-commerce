@@ -1,12 +1,40 @@
+@use '@/styles/_breakpoints' as *;
+
 .root {
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  font-weight: 900;
-  font-size: large;
+  flex-shrink: 0;
 
   .title {
-    padding: 15px;
+    padding: 0.5rem;
+    font-weight: 900;
+    font-size: 1rem;
+    white-space: nowrap;
+    @include transition;
+    text-decoration: none;
+    color: inherit;
+
+    @include respond-to(sm) {
+      font-size: 1.125rem;
+    }
+
+    @include respond-to(md) {
+      font-size: 1.25rem;
+      padding: 0.9375rem;
+    }
+
+    @include respond-to(lg) {
+      font-size: 1.5rem;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
   }
 }

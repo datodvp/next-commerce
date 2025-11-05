@@ -1,4 +1,5 @@
 @use '@/styles/_colors' as *;
+
 .root {
   button {
     display: flex;
@@ -9,13 +10,21 @@
     padding: 10px;
     border-radius: 50%;
     float: right;
+    min-width: auto;
+    min-height: auto;
+    width: auto;
+    height: auto;
 
     &:hover {
-      opacity: 0.7;
+      background-color: darken($primary-green, 10%);
     }
 
     &:active {
-      opacity: 1;
+      background-color: darken($primary-green, 15%) !important;
+    }
+
+    &:focus:not(:focus-visible):not(:active) {
+      background-color: $primary-green;
     }
 
     .spinner {

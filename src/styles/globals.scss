@@ -1,4 +1,5 @@
 @use '@/styles/colors' as *;
+@use '@/styles/_breakpoints' as *;
 
 * {
   box-sizing: border-box;
@@ -6,12 +7,120 @@
   margin: 0;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  font-size: 16px; // Base font size for rem calculations
+  
+  @include respond-to(md) {
+    font-size: 16px;
+  }
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  color: #333;
+  overflow-x: hidden;
+}
+
 a,
 button {
   all: unset;
+  cursor: pointer;
+  display: inline-block;
 }
 
+// Touch-friendly interactive elements
+button,
+a[role="button"],
+input[type="button"],
+input[type="submit"] {
+  @include touch-target;
+  @include transition;
+  @include focus-visible;
+  
+  // Prevent buttons from staying in active/focus state after click
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+  
+  // Ensure active state doesn't persist
+  &:active {
+    // Active state styles are handled per-component
+    // This ensures active doesn't interfere with focus
+  }
+}
+
+// Improved link styles
+a {
+  color: $primary-green;
+  text-decoration: none;
+  @include transition(color);
+  
+  &:hover {
+    color: darken($primary-green, 10%);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid $primary-green;
+    outline-offset: 2px;
+  }
+}
+
+// Image optimization
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+// Prevent text selection on UI elements
+button,
+[role="button"] {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+// Scrollbar styling (webkit)
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+  
+  &:hover {
+    background: #555;
+  }
+}
+
+// NProgress styling - hide spinner, keep only progress bar
 #nprogress .bar {
   background: $primary-green !important;
-  height: 5px !important;
+  height: 3px !important;
+  
+  @include respond-to(md) {
+    height: 5px !important;
+  }
+}
+
+// Hide the spinner/peg on the right side
+#nprogress .peg {
+  display: none !important;
+}
+
+// Hide the spinner element
+#nprogress .spinner {
+  display: none !important;
 }

@@ -1,56 +1,129 @@
 @use '@/styles/colors' as *;
+@use '@/styles/_breakpoints' as *;
 
 .actions {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   display: flex;
+  flex-direction: column;
   gap: 1rem;
-  align-items: center;
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 2rem;
+  }
 
   .addToCartButton {
-    padding: 1rem 2rem;
+    padding: 0.875rem 1.5rem;
     background-color: $primary-green;
     color: white;
     border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s;
+    @include transition(background-color);
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
+    min-height: 48px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    @include touch-target;
+    @include focus-visible;
+
+    @include respond-to(md) {
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      width: auto;
+      min-width: 200px;
+      max-width: none;
+      min-height: auto;
+      flex-shrink: 0;
+    }
 
     &:hover:not(:disabled) {
       background-color: #2d5a5f;
     }
 
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+      background-color: #2d5a5f !important;
+    }
+
+    &:focus:not(:focus-visible):not(:disabled):not(:active) {
+      background-color: $primary-green;
+    }
+
     &:disabled {
       background-color: #ccc;
       cursor: not-allowed;
+      opacity: 0.7;
     }
   }
 
   .quantitySelector {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     border: 2px solid #ddd;
-    border-radius: 8px;
-    padding: 0.5rem;
+    border-radius: 0.5rem;
+    padding: 0.375rem;
+    min-height: 48px;
+    align-self: flex-start;
+
+    @include respond-to(md) {
+      gap: 0.375rem;
+      padding: 0.25rem;
+      min-height: auto;
+      align-self: center;
+    }
 
     .quantityButton {
       background: none;
       border: none;
-      font-size: 1.25rem;
+      font-size: 1.125rem;
       font-weight: 600;
       color: $primary-green;
       cursor: pointer;
-      padding: 0.25rem 0.75rem;
-      transition: background-color 0.2s;
-      border-radius: 4px;
+      padding: 0.375rem 0.625rem;
+      @include transition(background-color);
+      border-radius: 0.25rem;
+      min-width: 36px;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      @include focus-visible;
 
-      &:hover {
+      @include respond-to(md) {
+        font-size: 1rem;
+        padding: 0.25rem 0.5rem;
+        min-width: 32px;
+        min-height: 32px;
+      }
+
+      &:hover:not(:disabled) {
         background-color: #f0f0f0;
+      }
+
+      &:active:not(:disabled) {
+        transform: scale(0.95);
+        background-color: #f0f0f0 !important;
+      }
+
+      &:focus:not(:focus-visible):not(:disabled):not(:active) {
+        background-color: transparent;
       }
 
       &:disabled {
@@ -60,10 +133,15 @@
     }
 
     .quantity {
-      font-size: 1.1rem;
+      font-size: 0.9375rem;
       font-weight: 600;
       min-width: 2rem;
       text-align: center;
+
+      @include respond-to(md) {
+        font-size: 1rem;
+        min-width: 1.75rem;
+      }
     }
   }
 }

@@ -24,6 +24,7 @@ const AddToCart = ({ product }: IProps) => {
 
   const addToCart = (e: React.MouseEvent) => {
     e.preventDefault()
+    e.stopPropagation() // Prevent event from bubbling to parent Link
     setIsLoading(true)
     setTimeout(() => {
       dispatch(addProduct(product))

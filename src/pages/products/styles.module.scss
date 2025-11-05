@@ -1,34 +1,105 @@
 @use '@/styles/colors' as *;
+@use '@/styles/_breakpoints' as *;
 
 .root {
-  padding-left: 10%;
-  padding-right: 10%;
+  padding: 1rem;
+
+  @include respond-to(md) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  @include respond-to(lg) {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
 }
 
 .productDetails {
   display: flex;
-  gap: 70px;
+  flex-direction: column;
+  gap: 2rem;
+
+  @include respond-to(md) {
+    gap: 3rem;
+  }
+
+  @include respond-to(lg) {
+    flex-direction: row;
+    gap: 4.375rem;
+  }
 }
 
 .previewContainer {
-  width: 700px;
-  height: 700px;
+  width: 100%;
+  position: relative;
+  aspect-ratio: 1;
+  background-color: #f5f5f5;
+  border-radius: 1rem;
+  overflow: hidden;
+
+  @include respond-to(md) {
+    border-radius: 1.25rem;
+  }
+
+  @include respond-to(lg) {
+    width: 43.75rem;
+    height: 43.75rem;
+    flex-shrink: 0;
+  }
 
   img {
     position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 
 .image {
-  border-radius: 16px;
+  border-radius: 1rem;
+
+  @include respond-to(md) {
+    border-radius: 1.25rem;
+  }
 }
 
 .smallerImagesContainer {
-  margin-top: 5px;
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+
+  @include respond-to(md) {
+    gap: 0.625rem;
+    margin-top: 1rem;
+  }
+
   .smallerImage {
-    border-radius: 16px;
-    margin-right: 10px;
+    border-radius: 0.75rem;
+    flex-shrink: 0;
+    width: 5rem;
+    height: 5rem;
     cursor: pointer;
+    @include transition(opacity);
+
+    @include respond-to(md) {
+      width: 6.25rem;
+      height: 6.25rem;
+      border-radius: 1rem;
+    }
+
+    @include respond-to(lg) {
+      width: 9.375rem;
+      height: 9.375rem;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
   }
 
   .blurredImage {
@@ -37,37 +108,71 @@
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
   color: #333;
+  line-height: 1.2;
+
+  @include respond-to(md) {
+    font-size: 2rem;
+  }
+
+  @include respond-to(lg) {
+    font-size: 2.5rem;
+  }
 }
 
 .category {
   color: rgb(172, 166, 166);
-  font-size: 1.1rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+
+  @include respond-to(md) {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @include respond-to(lg) {
+    font-size: 1.1rem;
+  }
 }
 
 .description {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  line-height: 1.8;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
   color: #555;
-  font-size: 1.05rem;
-  max-width: 600px;
+  font-size: 0.9375rem;
+  max-width: 100%;
+
+  @include respond-to(md) {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  @include respond-to(lg) {
+    font-size: 1.05rem;
+    max-width: 37.5rem;
+  }
 
   .label {
     font-weight: 600;
     color: #333;
     margin-bottom: 0.5rem;
     display: block;
+    font-size: 1rem;
+
+    @include respond-to(md) {
+      font-size: 1.125rem;
+    }
   }
 }
-
 
 .noImage {
   display: flex;
@@ -77,25 +182,53 @@
   height: 100%;
   background-color: #f0f0f0;
   color: #999;
-  font-size: 1.1rem;
-  border-radius: 16px;
+  font-size: 1rem;
+  border-radius: 1rem;
+  min-height: 200px;
+
+  @include respond-to(md) {
+    font-size: 1.1rem;
+    min-height: 300px;
+  }
 }
 
 .priceContainer {
   display: inline-block;
-  margin-top: 50px;
-  padding: 10px;
-  border-radius: 16px;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
   background-color: #3d727710;
   color: $primary-green;
-
-  font-size: 35px;
+  font-size: 1.75rem;
   font-weight: 900;
+
+  @include respond-to(md) {
+    margin-top: 2rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 2.25rem;
+    border-radius: 1.25rem;
+  }
+
+  @include respond-to(lg) {
+    margin-top: 3.125rem;
+    padding: 0.625rem;
+    font-size: 2.1875rem;
+    border-radius: 1rem;
+  }
 
   .dollarSymbol {
     float: inline-start;
-    font-size: 25px;
-    margin-right: 3px;
+    font-size: 1.25rem;
+    margin-right: 0.1875rem;
     color: rgb(137, 136, 136);
+
+    @include respond-to(md) {
+      font-size: 1.5rem;
+    }
+
+    @include respond-to(lg) {
+      font-size: 1.5625rem;
+      margin-right: 0.1875rem;
+    }
   }
 }

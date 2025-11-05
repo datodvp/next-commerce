@@ -1,6 +1,17 @@
+@use '@/styles/_breakpoints' as *;
+
 .root {
-  padding-left: 10%;
-  padding-right: 10%;
+  padding: 1rem;
+
+  @include respond-to(md) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  @include respond-to(lg) {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
 }
 
 .searchResults {
