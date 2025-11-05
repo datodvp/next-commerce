@@ -1,0 +1,49 @@
+@use '@/styles/colors' as *;
+
+.button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.primary {
+    background-color: $primary-green;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: darken($primary-green, 10%);
+    }
+  }
+
+  &.secondary {
+    background-color: $primary-gray;
+    color: $secondary-black;
+
+    &:hover:not(:disabled) {
+      background-color: darken($primary-gray, 10%);
+    }
+  }
+
+  &.danger {
+    background-color: $primary-red;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: darken($primary-red, 10%);
+    }
+  }
+}
+

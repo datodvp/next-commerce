@@ -5,14 +5,25 @@ import Image from 'next/image'
 import styles from './styles.module.scss'
 import { useState } from 'react'
 import AddToCartDetail from '@/components/ProductCard/AddToCartDetail'
+import { API_CONFIG } from '@/api/config'
 
 interface IProps {
   product: IProduct
 }
 
 const Product = ({ product }: IProps) => {
+  // Normalize image URLs - convert relative URLs to absolute
+  const normalizeImageUrl = (url: string): string => {
+    return url.startsWith('http') ? url : `${API_CONFIG.baseURL}${url}`
+  }
+
+  const normalizedImages = product.images?.map(img => ({
+    ...img,
+    url: normalizeImageUrl(img.url)
+  })) || []
+
   const [currentPreviewImage, setCurrentPreviewImage] = useState<string>(
-    product.images?.[0]?.url || '',
+    normalizedImages[0]?.url || '',
   )
 
   const updatePreviewImage = (image: string) => {
@@ -22,10 +33,10 @@ const Product = ({ product }: IProps) => {
     <main className={styles.root}>
       <section className={styles.productDetails}>
         <div>
-          {product.images && product.images.length > 0 ? (
+          {normalizedImages.length > 0 ? (
             <>
               <div className={styles.previewContainer}>
-                {product.images.map((image) => (
+                {normalizedImages.map((image) => (
                   <Image
                     src={image.url}
                     alt={product.title}
@@ -34,6 +45,7 @@ const Product = ({ product }: IProps) => {
                     className={styles.image}
                     priority
                     key={image.id}
+                    unoptimized
                     style={{
                       display:
                         currentPreviewImage === image.url ? 'block' : 'none',
@@ -42,7 +54,7 @@ const Product = ({ product }: IProps) => {
                 ))}
               </div>
               <div className={styles.smallerImagesContainer}>
-                {product.images.map((image) => (
+                {normalizedImages.map((image) => (
                   <Image
                     src={image.url}
                     alt={product.title}
@@ -50,6 +62,7 @@ const Product = ({ product }: IProps) => {
                     height={150}
                     key={image.id}
                     priority
+                    unoptimized
                     className={`${styles.smallerImage} ${image.url !== currentPreviewImage && styles.blurredImage}`}
                     onMouseEnter={() => updatePreviewImage(image.url)}
                   />

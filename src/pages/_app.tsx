@@ -5,6 +5,8 @@ import { ICategory } from '@/models/common/types'
 import { useNProgress } from '@/helpers/nprogress'
 import { store } from '@/stores'
 import { Provider } from 'react-redux'
+import { useRouter } from 'next/router'
+import AdminLayout from '@/admin/components/AdminLayout'
 
 interface IPageProps {
   categories: ICategory[]
@@ -21,8 +23,21 @@ function AppContent({
   Component: AppProps['Component']
   pageProps: IPageProps
 }) {
+  const router = useRouter()
+  const isAdminRoute = router.pathname.startsWith('/admin')
+
   useNProgress()
 
+  // Admin routes don't use the regular Layout
+  if (isAdminRoute) {
+    return (
+      <AdminLayout>
+        <Component {...pageProps} />
+      </AdminLayout>
+    )
+  }
+
+  // Client routes use the regular Layout
   return (
     <Layout {...pageProps}>
       <Component {...pageProps} />

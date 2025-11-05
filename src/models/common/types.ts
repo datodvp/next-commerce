@@ -1,9 +1,11 @@
 export interface IProduct {
   id: number
+  sku?: string
   title: string
   slug: string
   price: number
-  description: string
+  description?: string
+  stock?: number
   category: ICategory
   images: IImage[]
 }

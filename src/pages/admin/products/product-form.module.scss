@@ -1,0 +1,191 @@
+@use '@/styles/colors' as *;
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.imageUrls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.imageUrlItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: $primary-gray;
+  border-radius: 4px;
+  font-size: 14px;
+
+  span {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.removeButton,
+.addButton {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.removeButton {
+  background-color: $primary-red;
+  color: white;
+  margin-left: 8px;
+
+  &:hover {
+    background-color: darken($primary-red, 10%);
+  }
+}
+
+.addButton {
+  background-color: $primary-green;
+  color: white;
+
+  &:hover {
+    background-color: darken($primary-green, 10%);
+  }
+}
+
+.fileInput {
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.fileList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.fileName {
+  padding: 4px 8px;
+  background-color: $primary-gray;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.errorMessage {
+  color: $primary-red;
+  font-size: 14px;
+  padding: 12px;
+  background-color: #fee;
+  border-radius: 6px;
+  border: 1px solid $primary-red;
+  margin-bottom: 24px;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  font-size: 18px;
+  color: $secondary-black;
+}
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.imagePreview {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  background-color: #f5f5f5;
+  aspect-ratio: 1;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.removeImageButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: $primary-red;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    background-color: darken($primary-red, 10%);
+    transform: scale(1.1);
+  }
+}
+
+.urlInputContainer {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.urlInput {
+  flex: 1;
+}
+
+.addUrlButton {
+  padding: 12px 20px;
+  background-color: $primary-green;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: darken($primary-green, 10%);
+  }
+}
+
+.urlText {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: $secondary-black;
+}
+

@@ -1,0 +1,83 @@
+@use '@/styles/colors' as *;
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  h3 {
+    margin: 0;
+  }
+}
+
+.categoryName {
+  font-weight: 600;
+  color: $secondary-black;
+}
+
+.categorySlug {
+  font-size: 12px;
+  color: #999;
+  font-family: monospace;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.editButton,
+.deleteButton {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.editButton {
+  background-color: $primary-green;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: darken($primary-green, 10%);
+  }
+}
+
+.deleteButton {
+  background-color: $primary-red;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: darken($primary-red, 10%);
+  }
+}
+
+.empty {
+  text-align: center;
+  padding: 48px;
+  color: #666;
+
+  p {
+    margin-bottom: 16px;
+  }
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  font-size: 18px;
+  color: $secondary-black;
+}
+
