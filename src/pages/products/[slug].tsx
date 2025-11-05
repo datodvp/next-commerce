@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next'
 import { CategoryService, ProductService } from '@/services'
-import { ICategory, IProduct } from '@/models/common/types'
+import { IProduct } from '@/models/common/types'
 import Image from 'next/image'
 import styles from './styles.module.scss'
 import { useState } from 'react'
