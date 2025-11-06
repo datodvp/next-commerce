@@ -287,7 +287,7 @@ const EditProduct = () => {
 
           <FormGroup label="Flags (optional)">
             <div className={styles.flagsContainer}>
-              {flags && flags.length > 0 ? (
+              {flags.length > 0 ? (
                 flags.map((flag) => (
                   <label key={flag.id} className={styles.flagCheckbox}>
                     <input

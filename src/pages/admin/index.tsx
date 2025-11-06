@@ -58,7 +58,7 @@ const AdminDashboard = () => {
 
           <AdminCard className={styles.statCard}>
             <div className={styles.statValue}>
-              {flagsLoading ? '...' : flags?.length || 0}
+              {flagsLoading ? '...' : flags.length || 0}
             </div>
             <div className={styles.statLabel}>Total Flags</div>
           </AdminCard>

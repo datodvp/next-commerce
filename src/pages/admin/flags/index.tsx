@@ -69,7 +69,7 @@ const AdminFlags = () => {
           </Link>
         </div>
 
-        {flags && flags.length > 0 ? (
+        {flags.length > 0 ? (
           <AdminTable headers={['ID', 'Name', 'Discount %', 'Actions']}>
             {flags.map((flag) => (
               <tr key={flag.id}>
