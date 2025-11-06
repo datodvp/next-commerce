@@ -81,9 +81,34 @@ const Product = ({ product }: IProps) => {
             <h2 className={styles.category}>{product.category.name}</h2>
           )}
 
+          {product.flags && product.flags.length > 0 && (
+            <div className={styles.flags}>
+              {product.flags.map((flag) => (
+                <span key={flag.id} className={styles.flagBadge}>
+                  {flag.name}
+                </span>
+              ))}
+            </div>
+          )}
+
           <div className={styles.priceContainer}>
-            <span className={styles.dollarSymbol}>$</span>
-            <span>{product.price.toFixed(2)}</span>
+            {product.discountedPrice && product.discountedPrice < product.price ? (
+              <>
+                <div className={styles.discountedPriceContainer}>
+                  <span className={styles.dollarSymbol}>$</span>
+                  <span className={styles.discountedPrice}>{product.discountedPrice.toFixed(2)}</span>
+                </div>
+                <div className={styles.originalPriceContainer}>
+                  <span className={styles.originalPriceLabel}>Was:</span>
+                  <span className={styles.originalPrice}>${product.price.toFixed(2)}</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <span className={styles.dollarSymbol}>$</span>
+                <span>{product.price.toFixed(2)}</span>
+              </>
+            )}
           </div>
 
           {product.description && (

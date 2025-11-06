@@ -13,6 +13,7 @@ import {
   faTags,
   faSignOutAlt,
   faHome,
+  faFlag,
 } from '@fortawesome/free-solid-svg-icons'
 import styles from './AdminLayout.module.scss'
 
@@ -32,6 +33,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { href: '/admin', label: 'Dashboard', icon: faHome },
     { href: '/admin/products', label: 'Products', icon: faBox },
     { href: '/admin/categories', label: 'Categories', icon: faTags },
+    { href: '/admin/flags', label: 'Flags', icon: faFlag },
   ]
 
   return (
@@ -73,6 +75,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             {router.pathname === '/admin/categories' && 'Categories'}
             {router.pathname.startsWith('/admin/categories/create') && 'Create Category'}
             {router.pathname.startsWith('/admin/categories/edit') && 'Edit Category'}
+            {router.pathname === '/admin/flags' && 'Flags'}
+            {router.pathname.startsWith('/admin/flags/create') && 'Create Flag'}
+            {router.pathname.startsWith('/admin/flags/edit') && 'Edit Flag'}
           </h2>
         </header>
         <div className={styles.content}>{children}</div>

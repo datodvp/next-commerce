@@ -45,8 +45,26 @@ const ProductCard = ({ product }: IProps) => {
             {product.category && (
               <div className={styles.category}>{product.category.name}</div>
             )}
+            {product.flags && product.flags.length > 0 && (
+              <div className={styles.flags}>
+                {product.flags.map((flag) => (
+                  <span key={flag.id} className={styles.flagBadge}>
+                    {flag.name}
+                  </span>
+                ))}
+              </div>
+            )}
             <span className={styles.title}>{product.title}</span>
-            <span className={styles.price}>${product.price.toFixed(2)}</span>
+            <div className={styles.priceContainer}>
+              {product.discountedPrice && product.discountedPrice < product.price ? (
+                <>
+                  <span className={styles.originalPrice}>${product.price.toFixed(2)}</span>
+                  <span className={styles.discountedPrice}>${product.discountedPrice.toFixed(2)}</span>
+                </>
+              ) : (
+                <span className={styles.price}>${product.price.toFixed(2)}</span>
+              )}
+            </div>
           </Link>
           <div className={styles.actionsWrapper}>
             <AddToFavourites product={product} />

@@ -62,7 +62,16 @@ const CartProduct = ({ product }: IProps): React.ReactElement => {
         <div className={styles.info}>
           <span className={styles.title}>{product.title}</span>
           <span className={styles.description}>{product.description}</span>
-          <span className={styles.price}>$ {product.price.toFixed(2)}</span>
+          <div className={styles.priceContainer}>
+            {product.discountedPrice && product.discountedPrice < product.price ? (
+              <>
+                <span className={styles.originalPrice}>$ {product.price.toFixed(2)}</span>
+                <span className={styles.discountedPrice}>$ {product.discountedPrice.toFixed(2)}</span>
+              </>
+            ) : (
+              <span className={styles.price}>$ {product.price.toFixed(2)}</span>
+            )}
+          </div>
           <div className={styles.addition}>
             <button
               onClick={handleRemoveFromCart}

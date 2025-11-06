@@ -10,6 +10,7 @@ import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
 import AdminCard from '@/admin/components/AdminCard'
 import { useProducts } from '@/hooks/api/useProducts'
 import { useCategories } from '@/hooks/api/useCategories'
+import { useFlags } from '@/hooks/api/useFlags'
 import styles from './dashboard.module.scss'
 
 const AdminDashboard = () => {
@@ -17,6 +18,7 @@ const AdminDashboard = () => {
   const { isAuthenticated, loading: authLoading, requireAuth } = useAdminAuth()
   const { products, isLoading: productsLoading } = useProducts()
   const { categories, isLoading: categoriesLoading } = useCategories()
+  const { flags, isLoading: flagsLoading } = useFlags()
 
   useEffect(() => {
     if (!authLoading && !requireAuth()) {
@@ -53,6 +55,13 @@ const AdminDashboard = () => {
             </div>
             <div className={styles.statLabel}>Total Categories</div>
           </AdminCard>
+
+          <AdminCard className={styles.statCard}>
+            <div className={styles.statValue}>
+              {flagsLoading ? '...' : flags?.length || 0}
+            </div>
+            <div className={styles.statLabel}>Total Flags</div>
+          </AdminCard>
         </div>
 
         <div className={styles.actions}>
@@ -70,6 +79,12 @@ const AdminDashboard = () => {
                 className={styles.actionButton}
               >
                 Create New Category
+              </button>
+              <button
+                onClick={() => router.push('/admin/flags/create')}
+                className={styles.actionButton}
+              >
+                Create New Flag
               </button>
             </div>
           </AdminCard>

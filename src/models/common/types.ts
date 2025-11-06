@@ -1,13 +1,21 @@
+export interface IFlag {
+  id: number
+  name: string
+  discountPercentage: number
+}
+
 export interface IProduct {
   id: number
   sku?: string
   title: string
   slug: string
   price: number
+  discountedPrice?: number
   description?: string
   stock?: number
   category: ICategory
   images: IImage[]
+  flags?: IFlag[]
 }
 
 export interface ICategory {

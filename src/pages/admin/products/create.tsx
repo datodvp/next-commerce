@@ -13,6 +13,7 @@ import AdminCard from '@/admin/components/AdminCard'
 import AdminForm, { FormGroup, FormInput, FormTextarea, FormSelect } from '@/admin/components/AdminForm'
 import AdminButton from '@/admin/components/AdminButton'
 import { useCategories } from '@/hooks/api/useCategories'
+import { useFlags } from '@/hooks/api/useFlags'
 import { adminProductService, CreateProductData } from '@/admin/services'
 import styles from '@/pages/admin/products/product-form.module.scss'
 
@@ -20,6 +21,7 @@ const CreateProduct = () => {
   const router = useRouter()
   const { isAuthenticated, loading: authLoading, requireAuth } = useAdminAuth()
   const { categories, isLoading: categoriesLoading } = useCategories()
+  const { flags, isLoading: flagsLoading } = useFlags()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
 
@@ -31,6 +33,7 @@ const CreateProduct = () => {
     price: 0,
     stock: 0,
     categoryId: 0,
+    flagIds: [],
   })
 
   const [imageFiles, setImageFiles] = useState<File[]>([])
@@ -50,8 +53,18 @@ const CreateProduct = () => {
     }
   }, [imagePreviewUrls])
 
-  const handleInputChange = (field: keyof CreateProductData, value: string | number) => {
+  const handleInputChange = (field: keyof CreateProductData, value: string | number | number[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleFlagToggle = (flagId: number) => {
+    setFormData((prev) => {
+      const currentFlagIds = prev.flagIds || []
+      const newFlagIds = currentFlagIds.includes(flagId)
+        ? currentFlagIds.filter((id) => id !== flagId)
+        : [...currentFlagIds, flagId]
+      return { ...prev, flagIds: newFlagIds }
+    })
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,7 +117,7 @@ const CreateProduct = () => {
     }
   }
 
-  if (authLoading || categoriesLoading) {
+  if (authLoading || categoriesLoading || flagsLoading) {
     return (
       <AdminLayout>
         <div className={styles.loading}>Loading...</div>
@@ -198,6 +211,27 @@ const CreateProduct = () => {
                 </option>
               ))}
             </FormSelect>
+          </FormGroup>
+
+          <FormGroup label="Flags (optional)">
+            <div className={styles.flagsContainer}>
+              {flags && flags.length > 0 ? (
+                flags.map((flag) => (
+                  <label key={flag.id} className={styles.flagCheckbox}>
+                    <input
+                      type="checkbox"
+                      checked={formData.flagIds?.includes(flag.id) || false}
+                      onChange={() => handleFlagToggle(flag.id)}
+                    />
+                    <span>
+                      {flag.name} ({flag.discountPercentage}% off)
+                    </span>
+                  </label>
+                ))
+              ) : (
+                <p className={styles.noFlags}>No flags available. Create flags first.</p>
+              )}
+            </div>
           </FormGroup>
 
           <FormGroup label="Upload Images *">

@@ -1,0 +1,67 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.editButton,
+.deleteButton {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  background-color: transparent;
+}
+
+.editButton {
+  color: #007bff;
+  
+  &:hover {
+    background-color: #e7f3ff;
+  }
+}
+
+.deleteButton {
+  color: #dc3545;
+  
+  &:hover {
+    background-color: #ffe7e7;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.flagName {
+  font-weight: 500;
+}
+
+.discount {
+  font-weight: 600;
+  color: #28a745;
+}
+
+.empty {
+  text-align: center;
+  padding: 48px;
+  
+  p {
+    margin-bottom: 16px;
+    color: #666;
+  }
+}
+
+.loading {
+  padding: 48px;
+  text-align: center;
+}
+

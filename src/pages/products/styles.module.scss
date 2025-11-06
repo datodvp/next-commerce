@@ -192,6 +192,36 @@
   }
 }
 
+.flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+
+  @include respond-to(md) {
+    margin-top: 1.5rem;
+    gap: 1rem;
+  }
+}
+
+.flagBadge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #ff6b6b;
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  @include respond-to(md) {
+    font-size: 1rem;
+    padding: 0.625rem 1.25rem;
+  }
+}
+
 .priceContainer {
   display: inline-block;
   margin-top: 1.5rem;
@@ -229,6 +259,36 @@
     @include respond-to(lg) {
       font-size: 1.5625rem;
       margin-right: 0.1875rem;
+    }
+  }
+
+  .discountedPriceContainer {
+    display: inline-block;
+  }
+
+  .discountedPrice {
+    color: #ff6b6b;
+  }
+
+  .originalPriceContainer {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    font-weight: 400;
+
+    @include respond-to(md) {
+      font-size: 1.125rem;
+      margin-top: 0.75rem;
+    }
+
+    .originalPriceLabel {
+      color: #999;
+      margin-right: 0.5rem;
+    }
+
+    .originalPrice {
+      color: #999;
+      text-decoration: line-through;
     }
   }
 }

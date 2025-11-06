@@ -15,6 +15,7 @@ export interface CreateProductData {
   price: number
   stock?: number
   categoryId: number
+  flagIds?: number[]
 }
 
 export interface UpdateProductData extends Partial<CreateProductData> {
@@ -38,6 +39,11 @@ class AdminProductService {
       if (data.slug) formData.append('slug', data.slug)
       if (data.description) formData.append('description', data.description)
       if (data.stock !== undefined) formData.append('stock', data.stock.toString())
+      if (data.flagIds && data.flagIds.length > 0) {
+        data.flagIds.forEach((flagId) => {
+          formData.append('flagIds', flagId.toString())
+        })
+      }
       
       // Append image files
       if (images && images.length > 0) {
@@ -76,7 +82,12 @@ class AdminProductService {
         // Append product data
         Object.entries(updateData).forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
-            if (typeof value === 'string' || typeof value === 'number') {
+            if (key === 'flagIds' && Array.isArray(value)) {
+              // Handle flagIds array separately
+              value.forEach((flagId) => {
+                formData.append('flagIds', flagId.toString())
+              })
+            } else if (typeof value === 'string' || typeof value === 'number') {
               formData.append(key, value.toString())
             }
           }

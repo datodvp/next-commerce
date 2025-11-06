@@ -13,6 +13,7 @@ import AdminCard from '@/admin/components/AdminCard'
 import AdminForm, { FormGroup, FormInput, FormTextarea, FormSelect } from '@/admin/components/AdminForm'
 import AdminButton from '@/admin/components/AdminButton'
 import { useCategories } from '@/hooks/api/useCategories'
+import { useFlags } from '@/hooks/api/useFlags'
 import { adminProductService, UpdateProductData } from '@/admin/services'
 import { IProduct } from '@/models/common/types'
 import styles from '@/pages/admin/products/product-form.module.scss'
@@ -23,6 +24,7 @@ const EditProduct = () => {
   const { id } = router.query
   const { isAuthenticated, loading: authLoading, requireAuth } = useAdminAuth()
   const { categories, isLoading: categoriesLoading } = useCategories()
+  const { flags, isLoading: flagsLoading } = useFlags()
   const [product, setProduct] = useState<IProduct | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -37,6 +39,7 @@ const EditProduct = () => {
     price: 0,
     stock: 0,
     categoryId: 0,
+    flagIds: [],
   })
 
   const [existingImages, setExistingImages] = useState<Array<{ id: number; url: string }>>([])
@@ -82,6 +85,7 @@ const EditProduct = () => {
           price: productData.price,
           stock: productData.stock || 0,
           categoryId: productData.category?.id || 0,
+          flagIds: productData.flags?.map((flag) => flag.id) || [],
         })
       } catch (err) {
         setError('Failed to load product. Please try again.')
@@ -96,8 +100,18 @@ const EditProduct = () => {
     }
   }, [id])
 
-  const handleInputChange = (field: keyof UpdateProductData, value: string | number) => {
+  const handleInputChange = (field: keyof UpdateProductData, value: string | number | number[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleFlagToggle = (flagId: number) => {
+    setFormData((prev) => {
+      const currentFlagIds = prev.flagIds || []
+      const newFlagIds = currentFlagIds.includes(flagId)
+        ? currentFlagIds.filter((id) => id !== flagId)
+        : [...currentFlagIds, flagId]
+      return { ...prev, flagIds: newFlagIds }
+    })
   }
 
   const handleExistingImageDelete = async (imageId: number) => {
@@ -175,7 +189,7 @@ const EditProduct = () => {
     }
   }
 
-  if (authLoading || categoriesLoading || isLoading) {
+  if (authLoading || categoriesLoading || flagsLoading || isLoading) {
     return (
       <AdminLayout>
         <div className={styles.loading}>Loading...</div>
@@ -269,6 +283,27 @@ const EditProduct = () => {
                 </option>
               ))}
             </FormSelect>
+          </FormGroup>
+
+          <FormGroup label="Flags (optional)">
+            <div className={styles.flagsContainer}>
+              {flags && flags.length > 0 ? (
+                flags.map((flag) => (
+                  <label key={flag.id} className={styles.flagCheckbox}>
+                    <input
+                      type="checkbox"
+                      checked={formData.flagIds?.includes(flag.id) || false}
+                      onChange={() => handleFlagToggle(flag.id)}
+                    />
+                    <span>
+                      {flag.name} ({flag.discountPercentage}% off)
+                    </span>
+                  </label>
+                ))
+              ) : (
+                <p className={styles.noFlags}>No flags available. Create flags first.</p>
+              )}
+            </div>
           </FormGroup>
 
           {/* Existing Images */}
