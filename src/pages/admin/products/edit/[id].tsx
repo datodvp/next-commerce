@@ -3,7 +3,7 @@
  * Form to edit an existing product
  */
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import AdminLayout from '@/admin/components/AdminLayout'
@@ -40,9 +40,7 @@ const EditProduct = () => {
 
   const [existingImages, setExistingImages] = useState<Array<{ id: number; url: string }>>([])
   const [imageFiles, setImageFiles] = useState<File[]>([])
-  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([])
   const [deletingImageId, setDeletingImageId] = useState<number | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (!authLoading && !requireAuth()) {
@@ -87,13 +85,6 @@ const EditProduct = () => {
       fetchProduct()
     }
   }, [id])
-
-  // Cleanup object URLs on unmount
-  useEffect(() => {
-    return () => {
-      imagePreviewUrls.forEach((url) => URL.revokeObjectURL(url))
-    }
-  }, [imagePreviewUrls])
 
   const handleInputChange = (field: keyof UpdateProductData, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }))

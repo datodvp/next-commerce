@@ -7,7 +7,7 @@ import { RootState } from '@/stores'
 import { setCart } from './cart'
 import { setFavourites } from './favourites'
 
-export const localStorageMiddleware: Middleware<{}, RootState> =
+export const localStorageMiddleware: Middleware<unknown, RootState> =
   (store) => (next) => (action) => {
     const result = next(action)
     const state = store.getState()

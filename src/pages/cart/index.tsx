@@ -4,7 +4,7 @@ import styles from './styles.module.scss'
 import { CategoryService } from '@/services'
 import { useAppDispatch, useAppSelector } from '@/stores'
 import { GetServerSideProps } from 'next'
-import { clearCart } from '@/stores/cart'
+import { clearCart, IProductWithQuantity } from '@/stores/cart'
 import { useState } from 'react'
 import ConfirmationModal from '@/components/ConfirmationModal/ConfirmationModal'
 
@@ -58,7 +58,7 @@ const Cart = () => {
           </button>
         </div>
         <div className={styles.products}>
-        {products.map((product) => (
+        {products.map((product: IProductWithQuantity) => (
           <CartProduct product={product} key={product.id} />
         ))}
       </div>

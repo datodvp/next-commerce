@@ -75,7 +75,8 @@ $font-sizes: (
   @if map.has-key($breakpoints, $breakpoint) {
     $value: map.get($breakpoints, $breakpoint);
     @if $value > 0 {
-      @media (max-width: $value - 1px) {
+      $max-width: $value - 1px;
+      @media (max-width: $max-width) {
         @content;
       }
     }
