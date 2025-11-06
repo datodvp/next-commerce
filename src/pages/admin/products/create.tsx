@@ -6,7 +6,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
-import { useSWRConfig } from 'swr'
 import AdminLayout from '@/admin/components/AdminLayout'
 import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
 import AdminCard from '@/admin/components/AdminCard'
@@ -18,7 +17,6 @@ import styles from '@/pages/admin/products/product-form.module.scss'
 
 const CreateProduct = () => {
   const router = useRouter()
-  const { mutate: mutateSWR } = useSWRConfig()
   const { isAuthenticated, loading: authLoading, requireAuth } = useAdminAuth()
   const { categories, isLoading: categoriesLoading } = useCategories()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -37,7 +35,6 @@ const CreateProduct = () => {
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const previewUrlsRef = useRef<string[]>([])
 
   useEffect(() => {
     if (!authLoading && !requireAuth()) {
@@ -45,17 +42,12 @@ const CreateProduct = () => {
     }
   }, [authLoading, requireAuth])
 
-  // Update ref when URLs change
-  useEffect(() => {
-    previewUrlsRef.current = imagePreviewUrls
-  }, [imagePreviewUrls])
-
   // Cleanup object URLs on unmount
   useEffect(() => {
     return () => {
-      previewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url))
+      imagePreviewUrls.forEach((url) => URL.revokeObjectURL(url))
     }
-  }, [])
+  }, [imagePreviewUrls])
 
   const handleInputChange = (field: keyof CreateProductData, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -99,17 +91,14 @@ const CreateProduct = () => {
 
     try {
       await adminProductService.create(formData, imageFiles.length > 0 ? imageFiles : undefined)
-      // Invalidate products cache to refresh the list
-      await mutateSWR('products/all')
-      // Redirect only after successful creation and cache invalidation
       router.push('/admin/products')
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create product. Please try again.'
       setError(errorMessage)
       console.error(err)
-      setIsSubmitting(false) // Reset loading state on error so user can retry
+    } finally {
+      setIsSubmitting(false)
     }
-    // Note: setIsSubmitting is not reset in finally because on success we redirect immediately
   }
 
   if (authLoading || categoriesLoading) {

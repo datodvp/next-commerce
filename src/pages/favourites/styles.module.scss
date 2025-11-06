@@ -1,0 +1,197 @@
+@use '@/styles/colors' as *;
+@use '@/styles/_breakpoints' as *;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 1rem;
+  margin: auto;
+  min-height: 60vh;
+
+  @include respond-to(md) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  @include respond-to(lg) {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    @include respond-to(md) {
+      margin-bottom: 2rem;
+    }
+  }
+
+  .pageTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+
+    @include respond-to(md) {
+      font-size: 2rem;
+    }
+  }
+
+  .clearButton {
+    padding: 0.625rem 1.25rem;
+    background-color: transparent;
+    color: #666;
+    border: 2px solid #ddd;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    @include transition(all);
+    @include touch-target;
+    @include focus-visible;
+
+    @include respond-to(md) {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+    }
+
+    &:hover {
+      background-color: #f5f5f5;
+      border-color: #ccc;
+      color: #333;
+    }
+
+    &:active {
+      background-color: #eee;
+      border-color: #bbb;
+    }
+  }
+
+  .products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    margin-bottom: 1.5rem;
+
+    @include respond-to(md) {
+      gap: 2rem;
+      margin-bottom: 2rem;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    @include respond-to(lg) {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+  }
+
+  .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    min-height: 50vh;
+
+    @include respond-to(md) {
+      padding: 4rem 2rem;
+      min-height: 60vh;
+    }
+
+    .icon {
+      font-size: 3rem;
+      color: #ccc;
+      margin-bottom: 1rem;
+
+      @include respond-to(md) {
+        font-size: 4rem;
+      }
+    }
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #333;
+
+      @include respond-to(md) {
+        font-size: 1.75rem;
+      }
+    }
+
+    .message {
+      font-size: 0.875rem;
+      color: #666;
+      margin-bottom: 1.5rem;
+
+      @include respond-to(md) {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+      }
+    }
+
+    .link {
+      background-color: $primary-green;
+      color: white;
+      text-decoration: none;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      padding: 0.75rem 1.5rem;
+      @include transition(background-color);
+      @include touch-target;
+      @include focus-visible;
+
+      @include respond-to(md) {
+        padding: 0.75rem 2rem;
+      }
+
+      &:hover {
+        background-color: #2d5a5f;
+      }
+    }
+  }
+
+  .footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+
+    @include respond-to(md) {
+      margin-top: 3rem;
+    }
+
+    .continueShopping {
+      padding: 0.7rem 0.6rem 0rem 0.6rem;
+      background-color: transparent;
+      color: $primary-green;
+      border: 2px solid $primary-green;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      @include transition(all);
+      @include touch-target;
+      @include focus-visible;
+
+      @include respond-to(md) {
+        padding: 0.7rem 0.6rem 0rem 0.6rem;
+        font-size: 1.1rem;
+      }
+
+      &:hover {
+        background-color: $primary-green;
+        color: white;
+      }
+    }
+  }
+}
+

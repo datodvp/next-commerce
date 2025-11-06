@@ -6,7 +6,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
-import { useSWRConfig } from 'swr'
 import AdminLayout from '@/admin/components/AdminLayout'
 import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
 import AdminCard from '@/admin/components/AdminCard'
@@ -21,7 +20,6 @@ import { API_CONFIG } from '@/api/config'
 const EditProduct = () => {
   const router = useRouter()
   const { id } = router.query
-  const { mutate: mutateSWR } = useSWRConfig()
   const { isAuthenticated, loading: authLoading, requireAuth } = useAdminAuth()
   const { categories, isLoading: categoriesLoading } = useCategories()
   const [product, setProduct] = useState<IProduct | null>(null)
@@ -45,7 +43,6 @@ const EditProduct = () => {
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([])
   const [deletingImageId, setDeletingImageId] = useState<number | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const previewUrlsRef = useRef<string[]>([])
 
   useEffect(() => {
     if (!authLoading && !requireAuth()) {
@@ -91,17 +88,12 @@ const EditProduct = () => {
     }
   }, [id])
 
-  // Update ref when URLs change
-  useEffect(() => {
-    previewUrlsRef.current = imagePreviewUrls
-  }, [imagePreviewUrls])
-
   // Cleanup object URLs on unmount
   useEffect(() => {
     return () => {
-      previewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url))
+      imagePreviewUrls.forEach((url) => URL.revokeObjectURL(url))
     }
-  }, [])
+  }, [imagePreviewUrls])
 
   const handleInputChange = (field: keyof UpdateProductData, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -133,27 +125,8 @@ const EditProduct = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const newFiles = Array.from(e.target.files)
-      setImageFiles((prev) => [...prev, ...newFiles])
-      
-      // Create preview URLs for new files
-      const newPreviewUrls = newFiles.map((file) => URL.createObjectURL(file))
-      setImagePreviewUrls((prev) => [...prev, ...newPreviewUrls])
+      setImageFiles(Array.from(e.target.files))
     }
-    
-    // Reset input to allow selecting the same file again
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
-  }
-
-  const handleRemovePreviewImage = (index: number) => {
-    // Revoke the object URL to prevent memory leaks
-    URL.revokeObjectURL(imagePreviewUrls[index])
-    
-    // Remove from both arrays
-    setImageFiles((prev) => prev.filter((_, i) => i !== index))
-    setImagePreviewUrls((prev) => prev.filter((_, i) => i !== index))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -167,21 +140,14 @@ const EditProduct = () => {
         formData,
         imageFiles.length > 0 ? imageFiles : undefined
       )
-      // Invalidate products cache to refresh the list with updated data
-      await mutateSWR('products/all')
-      // Also invalidate the specific product cache if it exists
-      if (formData.id) {
-        await mutateSWR(`products/${formData.id}`)
-      }
-      // Redirect only after successful update and cache invalidation
       router.push('/admin/products')
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update product. Please try again.'
       setError(errorMessage)
       console.error(err)
-      setIsSubmitting(false) // Reset loading state on error so user can retry
+    } finally {
+      setIsSubmitting(false)
     }
-    // Note: setIsSubmitting is not reset in finally because on success we redirect immediately
   }
 
   if (authLoading || categoriesLoading || isLoading) {
@@ -312,7 +278,6 @@ const EditProduct = () => {
           {/* Upload New Images */}
           <FormGroup label="Upload New Images">
             <input
-              ref={fileInputRef}
               type="file"
               multiple
               accept="image/*"
@@ -320,26 +285,11 @@ const EditProduct = () => {
               className={styles.fileInput}
             />
             {imageFiles.length > 0 && (
-              <div className={styles.imageGrid}>
+              <div className={styles.fileList}>
                 {imageFiles.map((file, index) => (
-                  <div key={index} className={styles.imagePreview}>
-                    <Image
-                      src={imagePreviewUrls[index]}
-                      alt={`Preview ${file.name}`}
-                      width={150}
-                      height={150}
-                      className={styles.image}
-                      unoptimized
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleRemovePreviewImage(index)}
-                      className={styles.removeImageButton}
-                      title="Remove image"
-                    >
-                      ×
-                    </button>
-                  </div>
+                  <span key={index} className={styles.fileName}>
+                    {file.name}
+                  </span>
                 ))}
               </div>
             )}

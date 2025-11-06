@@ -92,7 +92,6 @@ const AdminProducts = () => {
                     <div className={styles.imageCell}>
                       {imageUrl ? (
                         <Image 
-                          key={`${product.id}-${product.images?.length || 0}-${imageUrl}`}
                           src={imageUrl} 
                           alt={product.title}
                           width={50}

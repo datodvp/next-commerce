@@ -111,13 +111,16 @@
     }
   }
 
-  .addToCartWrapper {
+  .actionsWrapper {
     grid-column: 1 / -1;
     justify-self: end;
     align-self: end;
     margin-top: 0.5rem;
     z-index: 10;
     position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 
     @include respond-to(lg) {
       justify-self: end;

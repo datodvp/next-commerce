@@ -2,6 +2,7 @@ import { IProduct } from '@/models/common/types'
 import Image from 'next/image'
 import styles from './ProductCard.module.scss'
 import AddToCart from './AddToCart'
+import AddToFavourites from './AddToFavourites'
 import Hologram from '../CartProduct/Hologram'
 import Link from 'next/link'
 import { API_CONFIG } from '@/api/config'
@@ -47,7 +48,8 @@ const ProductCard = ({ product }: IProps) => {
             <span className={styles.title}>{product.title}</span>
             <span className={styles.price}>${product.price.toFixed(2)}</span>
           </Link>
-          <div className={styles.addToCartWrapper}>
+          <div className={styles.actionsWrapper}>
+            <AddToFavourites product={product} />
             <AddToCart product={product} />
           </div>
         </div>

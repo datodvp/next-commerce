@@ -1,12 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { useDispatch, useSelector, useStore } from 'react-redux'
 import rootReducer from './combineReducers'
+import { localStorageMiddleware } from './localStorageMiddleware'
 
 export const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(localStorageMiddleware),
 })
 
-type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof store.getState>
 type AppDispatch = typeof store.dispatch
 type AppStore = typeof store
 

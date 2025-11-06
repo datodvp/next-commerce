@@ -22,12 +22,11 @@ const AdminButton = ({
 }: AdminButtonProps) => {
   return (
     <button
-      className={`${styles.button} ${styles[variant]} ${loading ? styles.loading : ''} ${className || ''}`}
+      className={`${styles.button} ${styles[variant]} ${className || ''}`}
       disabled={disabled || loading}
       {...props}
     >
-      {loading && <span className={styles.spinner}></span>}
-      <span className={styles.buttonText}>{loading ? 'Processing...' : children}</span>
+      {loading ? 'Loading...' : children}
     </button>
   )
 }
