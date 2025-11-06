@@ -4,6 +4,7 @@ import Image from 'next/image'
 import styles from './CartProduct.module.scss'
 import { useAppDispatch } from '@/stores'
 import ConfirmationModal from '@/components/ConfirmationModal/ConfirmationModal'
+import { API_CONFIG } from '@/api/config'
 
 interface IProps {
   product: IProductWithQuantity
@@ -29,17 +30,30 @@ const CartProduct = ({ product }: IProps): React.ReactElement => {
     dispatch(removeProduct(product))
   }
 
+  // Get first image or use placeholder
+  const firstImage = product.images && product.images.length > 0 
+    ? product.images[0].url 
+    : null
+  
+  // Make image URL absolute if it's relative
+  const imageUrl = firstImage
+    ? firstImage.startsWith('http') 
+      ? firstImage 
+      : `${API_CONFIG.baseURL}${firstImage}`
+    : null
+
   return (
     <>
       <div className={styles.root}>
         <div className={styles.imageContainer}>
-          {product.images && product.images.length > 0 ? (
+          {imageUrl ? (
             <Image
-              src={product.images[0].url}
+              src={imageUrl}
               alt={product.title}
               width={150}
               height={150}
               style={{ objectFit: 'cover' }}
+              unoptimized
             />
           ) : (
             <div className={styles.noImage}>No image</div>
