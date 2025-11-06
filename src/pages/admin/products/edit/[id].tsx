@@ -3,9 +3,10 @@
  * Form to edit an existing product
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
+import { mutate } from 'swr'
 import AdminLayout from '@/admin/components/AdminLayout'
 import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
 import AdminCard from '@/admin/components/AdminCard'
@@ -40,13 +41,22 @@ const EditProduct = () => {
 
   const [existingImages, setExistingImages] = useState<Array<{ id: number; url: string }>>([])
   const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([])
   const [deletingImageId, setDeletingImageId] = useState<number | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (!authLoading && !requireAuth()) {
       return
     }
   }, [authLoading, requireAuth])
+
+  // Cleanup object URLs on unmount
+  useEffect(() => {
+    return () => {
+      imagePreviewUrls.forEach((url) => URL.revokeObjectURL(url))
+    }
+  }, [imagePreviewUrls])
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -116,8 +126,27 @@ const EditProduct = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setImageFiles(Array.from(e.target.files))
+      const newFiles = Array.from(e.target.files)
+      setImageFiles((prev) => [...prev, ...newFiles])
+      
+      // Create preview URLs for new files
+      const newPreviewUrls = newFiles.map((file) => URL.createObjectURL(file))
+      setImagePreviewUrls((prev) => [...prev, ...newPreviewUrls])
     }
+    
+    // Reset input to allow selecting the same file again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  const handleRemovePreviewImage = (index: number) => {
+    // Revoke the object URL to prevent memory leaks
+    URL.revokeObjectURL(imagePreviewUrls[index])
+    
+    // Remove from both arrays
+    setImageFiles((prev) => prev.filter((_, i) => i !== index))
+    setImagePreviewUrls((prev) => prev.filter((_, i) => i !== index))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -131,6 +160,11 @@ const EditProduct = () => {
         formData,
         imageFiles.length > 0 ? imageFiles : undefined
       )
+      // Revalidate products list cache and individual product cache
+      await mutate('products/all')
+      if (formData.id) {
+        await mutate(`products/${formData.id}`)
+      }
       router.push('/admin/products')
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update product. Please try again.'
@@ -269,6 +303,7 @@ const EditProduct = () => {
           {/* Upload New Images */}
           <FormGroup label="Upload New Images">
             <input
+              ref={fileInputRef}
               type="file"
               multiple
               accept="image/*"
@@ -276,11 +311,26 @@ const EditProduct = () => {
               className={styles.fileInput}
             />
             {imageFiles.length > 0 && (
-              <div className={styles.fileList}>
+              <div className={styles.imageGrid}>
                 {imageFiles.map((file, index) => (
-                  <span key={index} className={styles.fileName}>
-                    {file.name}
-                  </span>
+                  <div key={index} className={styles.imagePreview}>
+                    <Image
+                      src={imagePreviewUrls[index]}
+                      alt={`Preview ${file.name}`}
+                      width={150}
+                      height={150}
+                      className={styles.image}
+                      unoptimized
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemovePreviewImage(index)}
+                      className={styles.removeImageButton}
+                      title="Remove image"
+                    >
+                      ×
+                    </button>
+                  </div>
                 ))}
               </div>
             )}

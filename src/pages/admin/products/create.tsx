@@ -6,6 +6,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
+import { mutate } from 'swr'
 import AdminLayout from '@/admin/components/AdminLayout'
 import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
 import AdminCard from '@/admin/components/AdminCard'
@@ -91,6 +92,8 @@ const CreateProduct = () => {
 
     try {
       await adminProductService.create(formData, imageFiles.length > 0 ? imageFiles : undefined)
+      // Revalidate products list cache
+      await mutate('products/all')
       router.push('/admin/products')
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create product. Please try again.'
