@@ -6,6 +6,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
+import { useSWRConfig } from 'swr'
 import AdminLayout from '@/admin/components/AdminLayout'
 import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
 import AdminCard from '@/admin/components/AdminCard'
@@ -20,6 +21,7 @@ import { API_CONFIG } from '@/api/config'
 const EditProduct = () => {
   const router = useRouter()
   const { id } = router.query
+  const { mutate: mutateSWR } = useSWRConfig()
   const { isAuthenticated, loading: authLoading, requireAuth } = useAdminAuth()
   const { categories, isLoading: categoriesLoading } = useCategories()
   const [product, setProduct] = useState<IProduct | null>(null)
@@ -165,14 +167,21 @@ const EditProduct = () => {
         formData,
         imageFiles.length > 0 ? imageFiles : undefined
       )
+      // Invalidate products cache to refresh the list with updated data
+      await mutateSWR('products/all')
+      // Also invalidate the specific product cache if it exists
+      if (formData.id) {
+        await mutateSWR(`products/${formData.id}`)
+      }
+      // Redirect only after successful update and cache invalidation
       router.push('/admin/products')
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update product. Please try again.'
       setError(errorMessage)
       console.error(err)
-    } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false) // Reset loading state on error so user can retry
     }
+    // Note: setIsSubmitting is not reset in finally because on success we redirect immediately
   }
 
   if (authLoading || categoriesLoading || isLoading) {
