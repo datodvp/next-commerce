@@ -29,11 +29,9 @@ const CreateProduct = () => {
     price: 0,
     stock: 0,
     categoryId: 0,
-    imageUrls: [],
   })
 
   const [imageFiles, setImageFiles] = useState<File[]>([])
-  const [imageUrls, setImageUrls] = useState<string[]>([])
 
   useEffect(() => {
     if (!authLoading && !requireAuth()) {
@@ -43,27 +41,6 @@ const CreateProduct = () => {
 
   const handleInputChange = (field: keyof CreateProductData, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
-  }
-
-  const handleImageUrlAdd = () => {
-    const url = prompt('Enter image URL:')
-    if (url && url.trim()) {
-      // Basic URL validation
-      try {
-        const urlObj = new URL(url.trim())
-        if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
-          setImageUrls((prev) => [...prev, url.trim()])
-        } else {
-          alert('Please enter a valid URL (must start with http:// or https://)')
-        }
-      } catch {
-        alert('Please enter a valid URL')
-      }
-    }
-  }
-
-  const handleImageUrlRemove = (index: number) => {
-    setImageUrls((prev) => prev.filter((_, i) => i !== index))
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,12 +61,7 @@ const CreateProduct = () => {
     setIsSubmitting(true)
 
     try {
-      const productData: CreateProductData = {
-        ...formData,
-        imageUrls: imageUrls.length > 0 ? imageUrls : undefined,
-      }
-
-      await adminProductService.create(productData, imageFiles.length > 0 ? imageFiles : undefined)
+      await adminProductService.create(formData, imageFiles.length > 0 ? imageFiles : undefined)
       router.push('/admin/products')
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create product. Please try again.'
@@ -196,27 +168,7 @@ const CreateProduct = () => {
             </FormSelect>
           </FormGroup>
 
-          <FormGroup label="Image URLs">
-            <div className={styles.imageUrls}>
-              {imageUrls.map((url, index) => (
-                <div key={index} className={styles.imageUrlItem}>
-                  <span>{url}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleImageUrlRemove(index)}
-                    className={styles.removeButton}
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-              <button type="button" onClick={handleImageUrlAdd} className={styles.addButton}>
-                Add Image URL
-              </button>
-            </div>
-          </FormGroup>
-
-          <FormGroup label="Upload Images">
+          <FormGroup label="Upload Images *">
             <input
               type="file"
               multiple

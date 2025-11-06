@@ -15,7 +15,6 @@ export interface CreateProductData {
   price: number
   stock?: number
   categoryId: number
-  imageUrls?: string[]
 }
 
 export interface UpdateProductData extends Partial<CreateProductData> {
@@ -39,9 +38,6 @@ class AdminProductService {
       if (data.slug) formData.append('slug', data.slug)
       if (data.description) formData.append('description', data.description)
       if (data.stock !== undefined) formData.append('stock', data.stock.toString())
-      if (data.imageUrls && data.imageUrls.length > 0) {
-        formData.append('imageUrls', JSON.stringify(data.imageUrls))
-      }
       
       // Append image files
       if (images && images.length > 0) {
@@ -71,10 +67,10 @@ class AdminProductService {
    */
   async update(data: UpdateProductData, images?: File[]): Promise<IProduct> {
     try {
-      const { id, imageUrls, ...updateData } = data
+      const { id, ...updateData } = data
 
-      // If we have images or imageUrls, use FormData
-      if ((images && images.length > 0) || (imageUrls && imageUrls.length > 0)) {
+      // If we have images, use FormData
+      if (images && images.length > 0) {
         const formData = new FormData()
 
         // Append product data
@@ -86,17 +82,10 @@ class AdminProductService {
           }
         })
 
-        // Append image URLs if provided
-        if (imageUrls && imageUrls.length > 0) {
-          formData.append('imageUrls', JSON.stringify(imageUrls))
-        }
-
         // Append image files
-        if (images && images.length > 0) {
-          images.forEach((image) => {
-            formData.append('images', image)
-          })
-        }
+        images.forEach((image) => {
+          formData.append('images', image)
+        })
 
         const response = await apiClient.getInstance().patch<IProduct>(
           `/products/${id}`,
@@ -113,6 +102,17 @@ class AdminProductService {
 
       // Otherwise, use regular JSON update
       return await apiClient.patch<IProduct>(`/products/${id}`, updateData)
+    } catch (error) {
+      throw ApiError.fromAxiosError(error as import('axios').AxiosError<import('@/api/errors').ApiErrorResponse>)
+    }
+  }
+
+  /**
+   * Delete a product image
+   */
+  async deleteImage(productId: number, imageId: number): Promise<void> {
+    try {
+      await apiClient.delete(`/products/${productId}/images/${imageId}`)
     } catch (error) {
       throw ApiError.fromAxiosError(error as import('axios').AxiosError<import('@/api/errors').ApiErrorResponse>)
     }

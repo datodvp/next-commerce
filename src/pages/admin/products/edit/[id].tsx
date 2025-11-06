@@ -14,7 +14,6 @@ import AdminButton from '@/admin/components/AdminButton'
 import { useCategories } from '@/hooks/api/useCategories'
 import { adminProductService, UpdateProductData } from '@/admin/services'
 import { IProduct } from '@/models/common/types'
-import { validateAndNormalizeUrl, isValidUrl } from '@/admin/utils/urlValidation'
 import styles from '@/pages/admin/products/product-form.module.scss'
 import { API_CONFIG } from '@/api/config'
 
@@ -37,14 +36,11 @@ const EditProduct = () => {
     price: 0,
     stock: 0,
     categoryId: 0,
-    imageUrls: [],
   })
 
-  const [existingImages, setExistingImages] = useState<string[]>([])
+  const [existingImages, setExistingImages] = useState<Array<{ id: number; url: string }>>([])
   const [imageFiles, setImageFiles] = useState<File[]>([])
-  const [imageUrls, setImageUrls] = useState<string[]>([])
-  const [urlInput, setUrlInput] = useState('')
-  const [urlError, setUrlError] = useState('')
+  const [deletingImageId, setDeletingImageId] = useState<number | null>(null)
 
   useEffect(() => {
     if (!authLoading && !requireAuth()) {
@@ -60,16 +56,13 @@ const EditProduct = () => {
         const productData = await adminProductService.getById(parseInt(id))
         setProduct(productData)
         
-        // Extract existing image URLs
-        const existingImageUrls = productData.images?.map((img) => {
-          // If it's a relative URL, make it absolute
-          if (img.url.startsWith('/')) {
-            return `${API_CONFIG.baseURL}${img.url}`
-          }
-          return img.url
-        }) || []
+        // Extract existing images with their IDs
+        const images = productData.images?.map((img) => ({
+          id: img.id,
+          url: img.url.startsWith('/') ? `${API_CONFIG.baseURL}${img.url}` : img.url,
+        })) || []
         
-        setExistingImages(existingImageUrls)
+        setExistingImages(images)
         setFormData({
           id: productData.id,
           sku: productData.sku || '',
@@ -79,7 +72,6 @@ const EditProduct = () => {
           price: productData.price,
           stock: productData.stock || 0,
           categoryId: productData.category?.id || 0,
-          imageUrls: [],
         })
       } catch (err) {
         setError('Failed to load product. Please try again.')
@@ -98,55 +90,33 @@ const EditProduct = () => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleImageUrlAdd = () => {
-    setUrlError('')
+  const handleExistingImageDelete = async (imageId: number) => {
+    if (!formData.id) return
     
-    if (!urlInput.trim()) {
-      setUrlError('Please enter a URL')
+    if (!confirm('Are you sure you want to delete this image?')) {
       return
     }
 
-    const validatedUrl = validateAndNormalizeUrl(urlInput.trim())
-    
-    if (!validatedUrl) {
-      setUrlError('Please enter a valid URL (must start with http:// or https://)')
-      return
+    setDeletingImageId(imageId)
+    try {
+      await adminProductService.deleteImage(formData.id, imageId)
+      // Remove from local state
+      setExistingImages((prev) => prev.filter((img) => img.id !== imageId))
+      // Refresh product data
+      const productData = await adminProductService.getById(formData.id)
+      setProduct(productData)
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete image. Please try again.'
+      setError(errorMessage)
+      console.error(err)
+    } finally {
+      setDeletingImageId(null)
     }
-
-    if (!isValidUrl(validatedUrl)) {
-      setUrlError('Invalid URL format')
-      return
-    }
-
-    // Check for duplicates
-    if (imageUrls.includes(validatedUrl) || existingImages.includes(validatedUrl)) {
-      setUrlError('This URL is already added')
-      return
-    }
-
-    setImageUrls((prev) => [...prev, validatedUrl])
-    setUrlInput('')
-    setUrlError('')
-  }
-
-  const handleImageUrlRemove = (index: number) => {
-    setImageUrls((prev) => prev.filter((_, i) => i !== index))
-  }
-
-  const handleExistingImageRemove = (index: number) => {
-    setExistingImages((prev) => prev.filter((_, i) => i !== index))
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setImageFiles(Array.from(e.target.files))
-    }
-  }
-
-  const handleUrlInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      handleImageUrlAdd()
     }
   }
 
@@ -157,15 +127,8 @@ const EditProduct = () => {
     setIsSubmitting(true)
 
     try {
-      const updateData: UpdateProductData = {
-        ...formData,
-        imageUrls: [...existingImages, ...imageUrls].length > 0 
-          ? [...existingImages, ...imageUrls] 
-          : undefined,
-      }
-
       await adminProductService.update(
-        updateData,
+        formData,
         imageFiles.length > 0 ? imageFiles : undefined
       )
       router.push('/admin/products')
@@ -278,62 +241,30 @@ const EditProduct = () => {
           {existingImages.length > 0 && (
             <FormGroup label="Existing Images">
               <div className={styles.imageGrid}>
-                {existingImages.map((url, index) => (
-                  <div key={index} className={styles.imagePreview}>
-                    <Image src={url} alt={`Product image ${index + 1}`} width={150} height={150} className={styles.image} unoptimized />
+                {existingImages.map((image) => (
+                  <div key={image.id} className={styles.imagePreview}>
+                    <Image 
+                      src={image.url} 
+                      alt={`Product image ${image.id}`} 
+                      width={150} 
+                      height={150} 
+                      className={styles.image} 
+                      unoptimized 
+                    />
                     <button
                       type="button"
-                      onClick={() => handleExistingImageRemove(index)}
+                      onClick={() => handleExistingImageDelete(image.id)}
                       className={styles.removeImageButton}
-                      title="Remove image"
+                      title="Delete image"
+                      disabled={deletingImageId === image.id}
                     >
-                      ×
+                      {deletingImageId === image.id ? '...' : '×'}
                     </button>
                   </div>
                 ))}
               </div>
             </FormGroup>
           )}
-
-          {/* Add New Image URLs */}
-          <FormGroup label="Add Image URLs" error={urlError}>
-            <div className={styles.urlInputContainer}>
-              <FormInput
-                type="url"
-                placeholder="https://example.com/image.jpg"
-                value={urlInput}
-                onChange={(e) => {
-                  setUrlInput(e.target.value)
-                  setUrlError('')
-                }}
-                onKeyDown={handleUrlInputKeyDown}
-                className={styles.urlInput}
-              />
-              <button
-                type="button"
-                onClick={handleImageUrlAdd}
-                className={styles.addUrlButton}
-              >
-                Add URL
-              </button>
-            </div>
-            {imageUrls.length > 0 && (
-              <div className={styles.imageUrls}>
-                {imageUrls.map((url, index) => (
-                  <div key={index} className={styles.imageUrlItem}>
-                    <span className={styles.urlText}>{url}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleImageUrlRemove(index)}
-                      className={styles.removeButton}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </FormGroup>
 
           {/* Upload New Images */}
           <FormGroup label="Upload New Images">
