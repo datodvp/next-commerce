@@ -5,7 +5,7 @@ export const useProductInFavourites = (product: IProduct) => {
   const favouritesStore = useAppSelector((state) => state.favourites)
 
   const productIsInFavourites = favouritesStore.products.some(
-    (item) => item.id === product.id,
+    (item: IProduct) => item.id === product.id,
   )
 
   return productIsInFavourites

@@ -1,4 +1,3 @@
-import { Middleware } from '@reduxjs/toolkit'
 import {
   saveCartToStorage,
   saveFavouritesToStorage,
@@ -6,14 +5,22 @@ import {
 import { RootState } from '@/stores'
 import { setCart } from './cart'
 import { setFavourites } from './favourites'
+import type { Middleware } from '@reduxjs/toolkit'
 
-export const localStorageMiddleware: Middleware<unknown, RootState> =
-  (store) => (next) => (action) => {
+export const localStorageMiddleware: Middleware<
+  object,
+  RootState
+> = (store) => (next) => (action) => {
     const result = next(action)
     const state = store.getState()
 
-    // Don't save to localStorage when loading from localStorage (to prevent overwriting)
-    if (action.type === setCart.type || action.type === setFavourites.type) {
+    // Type guard to check if action has a type property
+    if (
+      typeof action === 'object' &&
+      action !== null &&
+      'type' in action &&
+      (action.type === setCart.type || action.type === setFavourites.type)
+    ) {
       return result
     }
 
