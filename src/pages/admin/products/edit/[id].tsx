@@ -10,7 +10,12 @@ import { mutate } from 'swr'
 import AdminLayout from '@/admin/components/AdminLayout'
 import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
 import AdminCard from '@/admin/components/AdminCard'
-import AdminForm, { FormGroup, FormInput, FormTextarea, FormSelect } from '@/admin/components/AdminForm'
+import AdminForm, {
+  FormGroup,
+  FormInput,
+  FormTextarea,
+  FormSelect,
+} from '@/admin/components/AdminForm'
 import AdminButton from '@/admin/components/AdminButton'
 import { useCategories } from '@/hooks/api/useCategories'
 import { useFlags } from '@/hooks/api/useFlags'
@@ -42,7 +47,9 @@ const EditProduct = () => {
     flagIds: [],
   })
 
-  const [existingImages, setExistingImages] = useState<Array<{ id: number; url: string }>>([])
+  const [existingImages, setExistingImages] = useState<
+    Array<{ id: number; url: string }>
+  >([])
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([])
   const [deletingImageId, setDeletingImageId] = useState<number | null>(null)
@@ -68,13 +75,16 @@ const EditProduct = () => {
       try {
         const productData = await adminProductService.getById(parseInt(id))
         setProduct(productData)
-        
+
         // Extract existing images with their IDs
-        const images = productData.images?.map((img) => ({
-          id: img.id,
-          url: img.url.startsWith('/') ? `${API_CONFIG.baseURL}${img.url}` : img.url,
-        })) || []
-        
+        const images =
+          productData.images?.map((img) => ({
+            id: img.id,
+            url: img.url.startsWith('/')
+              ? `${API_CONFIG.baseURL}${img.url}`
+              : img.url,
+          })) || []
+
         setExistingImages(images)
         setFormData({
           id: productData.id,
@@ -100,7 +110,10 @@ const EditProduct = () => {
     }
   }, [id])
 
-  const handleInputChange = (field: keyof UpdateProductData, value: string | number | number[]) => {
+  const handleInputChange = (
+    field: keyof UpdateProductData,
+    value: string | number | number[],
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
@@ -116,7 +129,7 @@ const EditProduct = () => {
 
   const handleExistingImageDelete = async (imageId: number) => {
     if (!formData.id) return
-    
+
     if (!confirm('Are you sure you want to delete this image?')) {
       return
     }
@@ -130,7 +143,10 @@ const EditProduct = () => {
       const productData = await adminProductService.getById(formData.id)
       setProduct(productData)
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to delete image. Please try again.'
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Failed to delete image. Please try again.'
       setError(errorMessage)
       console.error(err)
     } finally {
@@ -142,12 +158,12 @@ const EditProduct = () => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files)
       setImageFiles((prev) => [...prev, ...newFiles])
-      
+
       // Create preview URLs for new files
       const newPreviewUrls = newFiles.map((file) => URL.createObjectURL(file))
       setImagePreviewUrls((prev) => [...prev, ...newPreviewUrls])
     }
-    
+
     // Reset input to allow selecting the same file again
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
@@ -157,7 +173,7 @@ const EditProduct = () => {
   const handleRemovePreviewImage = (index: number) => {
     // Revoke the object URL to prevent memory leaks
     URL.revokeObjectURL(imagePreviewUrls[index])
-    
+
     // Remove from both arrays
     setImageFiles((prev) => prev.filter((_, i) => i !== index))
     setImagePreviewUrls((prev) => prev.filter((_, i) => i !== index))
@@ -172,7 +188,7 @@ const EditProduct = () => {
     try {
       await adminProductService.update(
         formData,
-        imageFiles.length > 0 ? imageFiles : undefined
+        imageFiles.length > 0 ? imageFiles : undefined,
       )
       // Revalidate products list cache and individual product cache
       await mutate('products/all')
@@ -181,7 +197,10 @@ const EditProduct = () => {
       }
       router.push('/admin/products')
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to update product. Please try again.'
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Failed to update product. Please try again.'
       setError(errorMessage)
       console.error(err)
     } finally {
@@ -254,7 +273,9 @@ const EditProduct = () => {
                 min="0"
                 placeholder="0.00"
                 value={formData.price || ''}
-                onChange={(e) => handleInputChange('price', parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  handleInputChange('price', parseFloat(e.target.value) || 0)
+                }
                 required
               />
             </FormGroup>
@@ -265,7 +286,9 @@ const EditProduct = () => {
                 min="0"
                 placeholder="0"
                 value={formData.stock || ''}
-                onChange={(e) => handleInputChange('stock', parseInt(e.target.value) || 0)}
+                onChange={(e) =>
+                  handleInputChange('stock', parseInt(e.target.value) || 0)
+                }
               />
             </FormGroup>
           </div>
@@ -273,15 +296,19 @@ const EditProduct = () => {
           <FormGroup label="Category *">
             <FormSelect
               value={formData.categoryId || ''}
-              onChange={(e) => handleInputChange('categoryId', parseInt(e.target.value))}
+              onChange={(e) =>
+                handleInputChange('categoryId', parseInt(e.target.value))
+              }
               required
             >
               <option value="">Select a category</option>
-              {categories?.map((category: import('@/models/common/types').ICategory) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
+              {categories?.map(
+                (category: import('@/models/common/types').ICategory) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ),
+              )}
             </FormSelect>
           </FormGroup>
 
@@ -301,7 +328,9 @@ const EditProduct = () => {
                   </label>
                 ))
               ) : (
-                <p className={styles.noFlags}>No flags available. Create flags first.</p>
+                <p className={styles.noFlags}>
+                  No flags available. Create flags first.
+                </p>
               )}
             </div>
           </FormGroup>
@@ -312,13 +341,13 @@ const EditProduct = () => {
               <div className={styles.imageGrid}>
                 {existingImages.map((image) => (
                   <div key={image.id} className={styles.imagePreview}>
-                    <Image 
-                      src={image.url} 
-                      alt={`Product image ${image.id}`} 
-                      width={150} 
-                      height={150} 
-                      className={styles.image} 
-                      unoptimized 
+                    <Image
+                      src={image.url}
+                      alt={`Product image ${image.id}`}
+                      width={150}
+                      height={150}
+                      className={styles.image}
+                      unoptimized
                     />
                     <button
                       type="button"
@@ -390,4 +419,3 @@ const EditProduct = () => {
 }
 
 export default EditProduct
-

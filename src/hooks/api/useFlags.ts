@@ -9,7 +9,10 @@ import { IFlag } from '@/models/common/types'
 import { ApiError } from '@/api/errors'
 
 // SWR fetcher function
-const fetcher = async <T>(key: string, fetcherFn: () => Promise<T>): Promise<T> => {
+const fetcher = async <T>(
+  key: string,
+  fetcherFn: () => Promise<T>,
+): Promise<T> => {
   return fetcherFn()
 }
 
@@ -37,4 +40,3 @@ export const useFlags = () => {
     mutate,
   }
 }
-

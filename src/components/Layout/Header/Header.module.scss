@@ -1,5 +1,6 @@
 @use '@/styles/colors' as *;
 @use '@/styles/_breakpoints' as *;
+@use 'sass:color';
 
 .stickyContainer {
   position: sticky;
@@ -277,7 +278,7 @@
     display: block;
     text-decoration: none;
     color: inherit;
-    
+
     &:hover {
       opacity: 0.8;
     }
@@ -376,15 +377,46 @@
     }
   }
 
-  &:hover,
-  &.active {
-    background-color: $primary-green;
+  &:hover {
+    background-color: color.adjust($primary-green, $lightness: -5%);
     color: $text-white;
+  }
+
+  &.active {
+    background-color: color.adjust($primary-green, $lightness: -10%);
+    color: $text-white;
+    font-weight: 600;
+    position: relative;
+
+    @include respond-below(lg) {
+      border-left: 4px solid $text-white;
+      padding-left: calc(0.875rem - 4px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: $text-white;
+      border-radius: 2px 2px 0 0;
+      display: none;
+
+      @include respond-to(lg) {
+        display: block;
+      }
+    }
   }
 
   &.homeLink:hover,
   &.homeLink.active {
-    background-color: $primary-green;
+    background-color: color.adjust($primary-green, $lightness: -5%);
+  }
+
+  &.homeLink.active {
+    background-color: color.adjust($primary-green, $lightness: -10%);
   }
 
   &:active {

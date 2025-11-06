@@ -78,7 +78,9 @@ const AdminFlags = () => {
                   <span className={styles.flagName}>{flag.name}</span>
                 </td>
                 <td>
-                  <span className={styles.discount}>{flag.discountPercentage}%</span>
+                  <span className={styles.discount}>
+                    {flag.discountPercentage}%
+                  </span>
                 </td>
                 <td>
                   <div className={styles.actions}>
@@ -113,4 +115,3 @@ const AdminFlags = () => {
 }
 
 export default AdminFlags
-

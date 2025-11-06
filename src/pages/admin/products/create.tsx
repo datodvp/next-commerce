@@ -10,7 +10,12 @@ import { mutate } from 'swr'
 import AdminLayout from '@/admin/components/AdminLayout'
 import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
 import AdminCard from '@/admin/components/AdminCard'
-import AdminForm, { FormGroup, FormInput, FormTextarea, FormSelect } from '@/admin/components/AdminForm'
+import AdminForm, {
+  FormGroup,
+  FormInput,
+  FormTextarea,
+  FormSelect,
+} from '@/admin/components/AdminForm'
 import AdminButton from '@/admin/components/AdminButton'
 import { useCategories } from '@/hooks/api/useCategories'
 import { useFlags } from '@/hooks/api/useFlags'
@@ -53,7 +58,10 @@ const CreateProduct = () => {
     }
   }, [imagePreviewUrls])
 
-  const handleInputChange = (field: keyof CreateProductData, value: string | number | number[]) => {
+  const handleInputChange = (
+    field: keyof CreateProductData,
+    value: string | number | number[],
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
@@ -71,12 +79,12 @@ const CreateProduct = () => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files)
       setImageFiles((prev) => [...prev, ...newFiles])
-      
+
       // Create preview URLs for new files
       const newPreviewUrls = newFiles.map((file) => URL.createObjectURL(file))
       setImagePreviewUrls((prev) => [...prev, ...newPreviewUrls])
     }
-    
+
     // Reset input to allow selecting the same file again
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
@@ -86,7 +94,7 @@ const CreateProduct = () => {
   const handleRemovePreviewImage = (index: number) => {
     // Revoke the object URL to prevent memory leaks
     URL.revokeObjectURL(imagePreviewUrls[index])
-    
+
     // Remove from both arrays
     setImageFiles((prev) => prev.filter((_, i) => i !== index))
     setImagePreviewUrls((prev) => prev.filter((_, i) => i !== index))
@@ -104,12 +112,18 @@ const CreateProduct = () => {
     setIsSubmitting(true)
 
     try {
-      await adminProductService.create(formData, imageFiles.length > 0 ? imageFiles : undefined)
+      await adminProductService.create(
+        formData,
+        imageFiles.length > 0 ? imageFiles : undefined,
+      )
       // Revalidate products list cache
       await mutate('products/all')
       router.push('/admin/products')
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create product. Please try again.'
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Failed to create product. Please try again.'
       setError(errorMessage)
       console.error(err)
     } finally {
@@ -137,7 +151,10 @@ const CreateProduct = () => {
         {error && <div className={styles.errorMessage}>{error}</div>}
 
         <AdminForm onSubmit={handleSubmit}>
-          <FormGroup label="SKU *" error={error && !formData.sku ? 'SKU is required' : ''}>
+          <FormGroup
+            label="SKU *"
+            error={error && !formData.sku ? 'SKU is required' : ''}
+          >
             <FormInput
               type="text"
               placeholder="PROD-001"
@@ -147,7 +164,10 @@ const CreateProduct = () => {
             />
           </FormGroup>
 
-          <FormGroup label="Title *" error={error && !formData.title ? 'Title is required' : ''}>
+          <FormGroup
+            label="Title *"
+            error={error && !formData.title ? 'Title is required' : ''}
+          >
             <FormInput
               type="text"
               placeholder="Product Title"
@@ -175,14 +195,19 @@ const CreateProduct = () => {
           </FormGroup>
 
           <div className={styles.row}>
-            <FormGroup label="Price *" error={error && !formData.price ? 'Price is required' : ''}>
+            <FormGroup
+              label="Price *"
+              error={error && !formData.price ? 'Price is required' : ''}
+            >
               <FormInput
                 type="number"
                 step="0.01"
                 min="0"
                 placeholder="0.00"
                 value={formData.price || ''}
-                onChange={(e) => handleInputChange('price', parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  handleInputChange('price', parseFloat(e.target.value) || 0)
+                }
                 required
               />
             </FormGroup>
@@ -193,23 +218,32 @@ const CreateProduct = () => {
                 min="0"
                 placeholder="0"
                 value={formData.stock || ''}
-                onChange={(e) => handleInputChange('stock', parseInt(e.target.value) || 0)}
+                onChange={(e) =>
+                  handleInputChange('stock', parseInt(e.target.value) || 0)
+                }
               />
             </FormGroup>
           </div>
 
-          <FormGroup label="Category *" error={error && !formData.categoryId ? 'Category is required' : ''}>
+          <FormGroup
+            label="Category *"
+            error={error && !formData.categoryId ? 'Category is required' : ''}
+          >
             <FormSelect
               value={formData.categoryId || ''}
-              onChange={(e) => handleInputChange('categoryId', parseInt(e.target.value))}
+              onChange={(e) =>
+                handleInputChange('categoryId', parseInt(e.target.value))
+              }
               required
             >
               <option value="">Select a category</option>
-              {categories?.map((category: import('@/models/common/types').ICategory) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
+              {categories?.map(
+                (category: import('@/models/common/types').ICategory) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ),
+              )}
             </FormSelect>
           </FormGroup>
 
@@ -229,7 +263,9 @@ const CreateProduct = () => {
                   </label>
                 ))
               ) : (
-                <p className={styles.noFlags}>No flags available. Create flags first.</p>
+                <p className={styles.noFlags}>
+                  No flags available. Create flags first.
+                </p>
               )}
             </div>
           </FormGroup>
@@ -288,4 +324,3 @@ const CreateProduct = () => {
 }
 
 export default CreateProduct
-
