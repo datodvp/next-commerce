@@ -3,8 +3,9 @@
  * Form to create a new product
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
+import Image from 'next/image'
 import AdminLayout from '@/admin/components/AdminLayout'
 import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
 import AdminCard from '@/admin/components/AdminCard'
@@ -32,6 +33,9 @@ const CreateProduct = () => {
   })
 
   const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const previewUrlsRef = useRef<string[]>([])
 
   useEffect(() => {
     if (!authLoading && !requireAuth()) {
@@ -39,14 +43,45 @@ const CreateProduct = () => {
     }
   }, [authLoading, requireAuth])
 
+  // Update ref when URLs change
+  useEffect(() => {
+    previewUrlsRef.current = imagePreviewUrls
+  }, [imagePreviewUrls])
+
+  // Cleanup object URLs on unmount
+  useEffect(() => {
+    return () => {
+      previewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url))
+    }
+  }, [])
+
   const handleInputChange = (field: keyof CreateProductData, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setImageFiles(Array.from(e.target.files))
+      const newFiles = Array.from(e.target.files)
+      setImageFiles((prev) => [...prev, ...newFiles])
+      
+      // Create preview URLs for new files
+      const newPreviewUrls = newFiles.map((file) => URL.createObjectURL(file))
+      setImagePreviewUrls((prev) => [...prev, ...newPreviewUrls])
     }
+    
+    // Reset input to allow selecting the same file again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  const handleRemovePreviewImage = (index: number) => {
+    // Revoke the object URL to prevent memory leaks
+    URL.revokeObjectURL(imagePreviewUrls[index])
+    
+    // Remove from both arrays
+    setImageFiles((prev) => prev.filter((_, i) => i !== index))
+    setImagePreviewUrls((prev) => prev.filter((_, i) => i !== index))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -170,6 +205,7 @@ const CreateProduct = () => {
 
           <FormGroup label="Upload Images *">
             <input
+              ref={fileInputRef}
               type="file"
               multiple
               accept="image/*"
@@ -177,11 +213,26 @@ const CreateProduct = () => {
               className={styles.fileInput}
             />
             {imageFiles.length > 0 && (
-              <div className={styles.fileList}>
+              <div className={styles.imageGrid}>
                 {imageFiles.map((file, index) => (
-                  <span key={index} className={styles.fileName}>
-                    {file.name}
-                  </span>
+                  <div key={index} className={styles.imagePreview}>
+                    <Image
+                      src={imagePreviewUrls[index]}
+                      alt={`Preview ${file.name}`}
+                      width={150}
+                      height={150}
+                      className={styles.image}
+                      unoptimized
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemovePreviewImage(index)}
+                      className={styles.removeImageButton}
+                      title="Remove image"
+                    >
+                      ×
+                    </button>
+                  </div>
                 ))}
               </div>
             )}
