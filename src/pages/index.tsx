@@ -46,8 +46,15 @@ const Home = ({ categories }: IProps) => {
           </div>
         </div>
         <div className={styles.heroImage}>
-          <div className={styles.imagePlaceholder}>
-            <span className={styles.placeholderIcon}>🍳</span>
+          <div className={styles.imageWrapper}>
+            <Image
+              src="/images/hero-image.png"
+              alt="Kitchen Essentials"
+              fill
+              className={styles.heroImg}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority
+            />
           </div>
         </div>
       </section>
@@ -63,33 +70,45 @@ const Home = ({ categories }: IProps) => {
 
         {categories.length > 0 ? (
           <div className={styles.categoriesGrid}>
-            {categories.map((category) => (
-              <Link
-                key={category.id}
-                href={`/categories/${category.slug}`}
-                className={styles.categoryCard}
-              >
-                <div className={styles.categoryImage}>
-                  {category.image ? (
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      fill
-                      className={styles.categoryImg}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div className={styles.categoryPlaceholder}>
-                      <span className={styles.categoryIcon}>🏪</span>
-                    </div>
-                  )}
-                </div>
-                <div className={styles.categoryContent}>
-                  <h3 className={styles.categoryName}>{category.name}</h3>
-                  <span className={styles.categoryArrow}>→</span>
-                </div>
-              </Link>
-            ))}
+            {categories.map((category, index) => {
+              // Use specific images for first and second categories
+              let imageSrc = category.image
+              if (index === 0) {
+                imageSrc = '/images/green-juice.png'
+              } else if (index === 1) {
+                imageSrc = '/images/global-knives.png'
+              } else if (index === 2) {
+                imageSrc = '/images/cooking.png'
+              }
+
+              return (
+                <Link
+                  key={category.id}
+                  href={`/categories/${category.slug}`}
+                  className={styles.categoryCard}
+                >
+                  <div className={styles.categoryImage}>
+                    {imageSrc ? (
+                      <Image
+                        src={imageSrc}
+                        alt={category.name}
+                        fill
+                        className={styles.categoryImg}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <div className={styles.categoryPlaceholder}>
+                        <span className={styles.categoryIcon}>🏪</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.categoryContent}>
+                    <h3 className={styles.categoryName}>{category.name}</h3>
+                    <span className={styles.categoryArrow}>→</span>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         ) : (
           <div className={styles.noCategories}>

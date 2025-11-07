@@ -127,6 +127,21 @@
   }
 }
 
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 1;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.heroImg {
+  object-fit: cover;
+  border-radius: 20px;
+}
+
 .imagePlaceholder {
   width: 100%;
   max-width: 500px;
