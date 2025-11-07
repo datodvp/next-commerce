@@ -29,42 +29,45 @@ class AdminProductService {
   async create(data: CreateProductData, images?: File[]): Promise<IProduct> {
     try {
       const formData = new FormData()
-      
+
       // Append product data
       formData.append('sku', data.sku)
       formData.append('title', data.title)
       formData.append('price', data.price.toString())
       formData.append('categoryId', data.categoryId.toString())
-      
+
       if (data.slug) formData.append('slug', data.slug)
       if (data.description) formData.append('description', data.description)
-      if (data.stock !== undefined) formData.append('stock', data.stock.toString())
+      if (data.stock !== undefined)
+        formData.append('stock', data.stock.toString())
       if (data.flagIds && data.flagIds.length > 0) {
         data.flagIds.forEach((flagId) => {
           formData.append('flagIds', flagId.toString())
         })
       }
-      
+
       // Append image files
       if (images && images.length > 0) {
         images.forEach((image) => {
           formData.append('images', image)
         })
       }
-      
-      const response = await apiClient.getInstance().post<IProduct>(
-        '/products',
-        formData,
-        {
+
+      const response = await apiClient
+        .getInstance()
+        .post<IProduct>('/products', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-        }
-      )
-      
+        })
+
       return response.data
     } catch (error) {
-      throw ApiError.fromAxiosError(error as import('axios').AxiosError<import('@/api/errors').ApiErrorResponse>)
+      throw ApiError.fromAxiosError(
+        error as import('axios').AxiosError<
+          import('@/api/errors').ApiErrorResponse
+        >,
+      )
     }
   }
 
@@ -98,15 +101,13 @@ class AdminProductService {
           formData.append('images', image)
         })
 
-        const response = await apiClient.getInstance().patch<IProduct>(
-          `/products/${id}`,
-          formData,
-          {
+        const response = await apiClient
+          .getInstance()
+          .patch<IProduct>(`/products/${id}`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
-          }
-        )
+          })
 
         return response.data
       }
@@ -114,7 +115,11 @@ class AdminProductService {
       // Otherwise, use regular JSON update
       return await apiClient.patch<IProduct>(`/products/${id}`, updateData)
     } catch (error) {
-      throw ApiError.fromAxiosError(error as import('axios').AxiosError<import('@/api/errors').ApiErrorResponse>)
+      throw ApiError.fromAxiosError(
+        error as import('axios').AxiosError<
+          import('@/api/errors').ApiErrorResponse
+        >,
+      )
     }
   }
 
@@ -125,7 +130,11 @@ class AdminProductService {
     try {
       await apiClient.delete(`/products/${productId}/images/${imageId}`)
     } catch (error) {
-      throw ApiError.fromAxiosError(error as import('axios').AxiosError<import('@/api/errors').ApiErrorResponse>)
+      throw ApiError.fromAxiosError(
+        error as import('axios').AxiosError<
+          import('@/api/errors').ApiErrorResponse
+        >,
+      )
     }
   }
 
@@ -136,7 +145,11 @@ class AdminProductService {
     try {
       await apiClient.delete(`/products/${id}`)
     } catch (error) {
-      throw ApiError.fromAxiosError(error as import('axios').AxiosError<import('@/api/errors').ApiErrorResponse>)
+      throw ApiError.fromAxiosError(
+        error as import('axios').AxiosError<
+          import('@/api/errors').ApiErrorResponse
+        >,
+      )
     }
   }
 
@@ -147,10 +160,34 @@ class AdminProductService {
     try {
       return await apiClient.get<IProduct>(`/products/${id}`)
     } catch (error) {
-      throw ApiError.fromAxiosError(error as import('axios').AxiosError<import('@/api/errors').ApiErrorResponse>)
+      throw ApiError.fromAxiosError(
+        error as import('axios').AxiosError<
+          import('@/api/errors').ApiErrorResponse
+        >,
+      )
+    }
+  }
+
+  /**
+   * Reorder product images
+   */
+  async reorderImages(
+    productId: number,
+    imageOrders: { imageId: number; order: number }[],
+  ): Promise<IProduct> {
+    try {
+      return await apiClient.patch<IProduct>(
+        `/products/${productId}/images/reorder`,
+        { imageOrders },
+      )
+    } catch (error) {
+      throw ApiError.fromAxiosError(
+        error as import('axios').AxiosError<
+          import('@/api/errors').ApiErrorResponse
+        >,
+      )
     }
   }
 }
 
 export const adminProductService = new AdminProductService()
-

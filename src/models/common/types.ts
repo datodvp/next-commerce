@@ -28,6 +28,7 @@ export interface ICategory {
 export interface IImage {
   id: number
   url: string
+  order?: number
 }
 
 export interface IUser {

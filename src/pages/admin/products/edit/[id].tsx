@@ -48,11 +48,16 @@ const EditProduct = () => {
   })
 
   const [existingImages, setExistingImages] = useState<
-    Array<{ id: number; url: string }>
+    Array<{ id: number; url: string; order?: number }>
   >([])
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([])
   const [deletingImageId, setDeletingImageId] = useState<number | null>(null)
+  const [draggedImageId, setDraggedImageId] = useState<number | null>(null)
+  const [dragOverImageId, setDragOverImageId] = useState<number | null>(null)
+  const [originalImageOrder, setOriginalImageOrder] = useState<
+    Array<{ id: number; order: number }>
+  >([])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -76,16 +81,23 @@ const EditProduct = () => {
         const productData = await adminProductService.getById(parseInt(id))
         setProduct(productData)
 
-        // Extract existing images with their IDs
+        // Extract existing images with their IDs and order
         const images =
           productData.images?.map((img) => ({
             id: img.id,
             url: img.url.startsWith('/')
               ? `${API_CONFIG.baseURL}${img.url}`
               : img.url,
+            order: img.order ?? 0,
           })) || []
 
-        setExistingImages(images)
+        // Sort images by order
+        const sortedImages = [...images].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+        setExistingImages(sortedImages)
+        // Store original order for comparison
+        setOriginalImageOrder(
+          sortedImages.map((img) => ({ id: img.id, order: img.order ?? 0 })),
+        )
         setFormData({
           id: productData.id,
           sku: productData.sku || '',
@@ -139,9 +151,26 @@ const EditProduct = () => {
       await adminProductService.deleteImage(formData.id, imageId)
       // Remove from local state
       setExistingImages((prev) => prev.filter((img) => img.id !== imageId))
+      // Update original order to reflect deletion
+      setOriginalImageOrder((prev) => prev.filter((img) => img.id !== imageId))
       // Refresh product data
       const productData = await adminProductService.getById(formData.id)
       setProduct(productData)
+      // Update original order after refresh
+      const images =
+        productData.images?.map((img) => ({
+          id: img.id,
+          url: img.url.startsWith('/')
+            ? `${API_CONFIG.baseURL}${img.url}`
+            : img.url,
+          order: img.order ?? 0,
+        })) || []
+      const sortedImages = [...images].sort(
+        (a, b) => (a.order ?? 0) - (b.order ?? 0),
+      )
+      setOriginalImageOrder(
+        sortedImages.map((img) => ({ id: img.id, order: img.order ?? 0 })),
+      )
     } catch (err: unknown) {
       const errorMessage =
         err instanceof Error
@@ -152,6 +181,66 @@ const EditProduct = () => {
     } finally {
       setDeletingImageId(null)
     }
+  }
+
+  const handleDragStart = (e: React.DragEvent, imageId: number) => {
+    setDraggedImageId(imageId)
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/html', imageId.toString())
+  }
+
+  const handleDragOver = (e: React.DragEvent, imageId: number) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    if (draggedImageId !== imageId) {
+      setDragOverImageId(imageId)
+    }
+  }
+
+  const handleDragLeave = () => {
+    setDragOverImageId(null)
+  }
+
+  const handleDrop = (e: React.DragEvent, targetImageId: number) => {
+    e.preventDefault()
+    setDragOverImageId(null)
+
+    if (!draggedImageId || draggedImageId === targetImageId) {
+      setDraggedImageId(null)
+      return
+    }
+
+    const draggedIndex = existingImages.findIndex(
+      (img) => img.id === draggedImageId,
+    )
+    const targetIndex = existingImages.findIndex(
+      (img) => img.id === targetImageId,
+    )
+
+    if (draggedIndex === -1 || targetIndex === -1) {
+      setDraggedImageId(null)
+      return
+    }
+
+    // Create new array with reordered images
+    const newImages = [...existingImages]
+    const [draggedImage] = newImages.splice(draggedIndex, 1)
+    newImages.splice(targetIndex, 0, draggedImage)
+
+    // Update order values (only in local state, not saved yet)
+    const reorderedImages = newImages.map((img, index) => ({
+      ...img,
+      order: index,
+    }))
+
+    // Update local state only - no API call
+    setExistingImages(reorderedImages)
+    setDraggedImageId(null)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedImageId(null)
+    setDragOverImageId(null)
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -186,10 +275,36 @@ const EditProduct = () => {
     setIsSubmitting(true)
 
     try {
+      // Check if image order has changed
+      const currentImageOrder = existingImages.map((img, index) => ({
+        id: img.id,
+        order: index,
+      }))
+
+      const orderChanged =
+        currentImageOrder.length !== originalImageOrder.length ||
+        currentImageOrder.some(
+          (img, index) =>
+            originalImageOrder.find((orig) => orig.id === img.id)?.order !==
+            index,
+        )
+
+      // If order changed, update image order first
+      if (orderChanged && formData.id && existingImages.length > 0) {
+        const imageOrders = currentImageOrder.map((img) => ({
+          imageId: img.id,
+          order: img.order,
+        }))
+
+        await adminProductService.reorderImages(formData.id, imageOrders)
+      }
+
+      // Then update the product
       await adminProductService.update(
         formData,
         imageFiles.length > 0 ? imageFiles : undefined,
       )
+
       // Revalidate products list cache and individual product cache
       await mutate('products/all')
       if (formData.id) {
@@ -337,10 +452,29 @@ const EditProduct = () => {
 
           {/* Existing Images */}
           {existingImages.length > 0 && (
-            <FormGroup label="Existing Images">
+            <FormGroup label="Existing Images (drag to reorder - changes saved on Update)">
               <div className={styles.imageGrid}>
-                {existingImages.map((image) => (
-                  <div key={image.id} className={styles.imagePreview}>
+                {existingImages.map((image, index) => (
+                  <div
+                    key={image.id}
+                    className={`${styles.imagePreview} ${
+                      draggedImageId === image.id ? styles.dragging : ''
+                    } ${
+                      dragOverImageId === image.id ? styles.dragOver : ''
+                    } ${index === 0 ? styles.mainImage : ''}`}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, image.id)}
+                    onDragOver={(e) => handleDragOver(e, image.id)}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, image.id)}
+                    onDragEnd={handleDragEnd}
+                  >
+                    {index === 0 && (
+                      <div className={styles.mainImageBadge}>Main Image</div>
+                    )}
+                    <div className={styles.dragHandle} title="Drag to reorder">
+                      ⋮⋮
+                    </div>
                     <Image
                       src={image.url}
                       alt={`Product image ${image.id}`}
@@ -351,7 +485,11 @@ const EditProduct = () => {
                     />
                     <button
                       type="button"
-                      onClick={() => handleExistingImageDelete(image.id)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleExistingImageDelete(image.id)
+                      }}
+                      onMouseDown={(e) => e.stopPropagation()}
                       className={styles.removeImageButton}
                       title="Delete image"
                       disabled={deletingImageId === image.id}
