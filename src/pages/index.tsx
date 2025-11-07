@@ -1,96 +1,139 @@
-import { useMemo } from 'react'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { ICategory, IProduct } from '@/models/common/types'
+import { ICategory } from '@/models/common/types'
 import { GetServerSideProps } from 'next'
-import { CategoryService, ProductService } from '@/services'
-import ProductList from '@/components/ProductList'
+import { CategoryService } from '@/services'
+import Link from 'next/link'
+import Image from 'next/image'
 import styles from './styles.module.scss'
 
 interface IProps {
   categories: ICategory[]
-  products: IProduct[]
 }
 
-const Home = ({ products }: IProps) => {
-  const router = useRouter()
-  const searchQuery = (router.query.search as string) || ''
-
-  // Filter products based on search query
-  const filteredProducts = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return products
-    }
-
-    const query = searchQuery.toLowerCase().trim()
-    return products.filter(
-      (product) =>
-        product.title.toLowerCase().includes(query) ||
-        product.description?.toLowerCase().includes(query) ||
-        product.category?.name.toLowerCase().includes(query),
-    )
-  }, [products, searchQuery])
-
-  const handleClearSearch = () => {
-    router.push('/', undefined, { shallow: true })
-  }
-
+const Home = ({ categories }: IProps) => {
   return (
-    <section className={styles.root}>
-      {searchQuery && (
-        <div className={styles.searchResults}>
-          {filteredProducts.length > 0 ? (
-            <p className={styles.message}>
-              Found <span className={styles.count}>{filteredProducts.length}</span>{' '}
-              product{filteredProducts.length !== 1 ? 's' : ''} for{' '}
-              <span className={styles.query}>&quot;{searchQuery}&quot;</span>
-            </p>
-          ) : (
-            <div>
-              <p className={`${styles.message} ${styles.noResults}`}>
-                No products found for <span className={styles.query}>&quot;{searchQuery}&quot;</span>
-              </p>
-              <p className={`${styles.message} ${styles.noResultsMessage}`}>
-                Try a different search term or{' '}
-                <Link href="/" className={styles.link} aria-label="Browse all products">
-                  browse all products
-                </Link>
-              </p>
+    <div className={styles.landingPage}>
+      {/* Hero Section */}
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.heroTitle}>
+            Welcome to{' '}
+            <span className={styles.brandName}>Kitchen Essentials</span>
+          </h1>
+          <p className={styles.heroSubtitle}>
+            Your one-stop destination for premium kitchen products that
+            transform your cooking experience
+          </p>
+          <p className={styles.heroDescription}>
+            At Kitchen Essentials, we believe that great meals start with great
+            tools. For over a decade, we&apos;ve been curating the finest
+            selection of kitchenware, cookware, and culinary accessories. Our
+            passion for quality and commitment to excellence has made us a
+            trusted name in kitchens across the country.
+          </p>
+          <div className={styles.heroFeatures}>
+            <div className={styles.feature}>
+              <span className={styles.featureIcon}>✨</span>
+              <span>Premium Quality</span>
             </div>
-          )}
-          <button
-            onClick={handleClearSearch}
-            className={styles.clearButton}
-            aria-label="Clear search"
-          >
-            Clear search
-          </button>
+            <div className={styles.feature}>
+              <span className={styles.featureIcon}>🚚</span>
+              <span>Fast Delivery</span>
+            </div>
+            <div className={styles.feature}>
+              <span className={styles.featureIcon}>💚</span>
+              <span>Eco-Friendly</span>
+            </div>
+          </div>
         </div>
+        <div className={styles.heroImage}>
+          <div className={styles.imagePlaceholder}>
+            <span className={styles.placeholderIcon}>🍳</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories Section */}
+      <section className={styles.categoriesSection}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Shop by Category</h2>
+          <p className={styles.sectionSubtitle}>
+            Explore our carefully curated collections
+          </p>
+        </div>
+
+        {categories.length > 0 ? (
+          <div className={styles.categoriesGrid}>
+            {categories.map((category) => (
+              <Link
+                key={category.id}
+                href={`/categories/${category.slug}`}
+                className={styles.categoryCard}
+              >
+                <div className={styles.categoryImage}>
+                  {category.image ? (
+                    <Image
+                      src={category.image}
+                      alt={category.name}
+                      fill
+                      className={styles.categoryImg}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className={styles.categoryPlaceholder}>
+                      <span className={styles.categoryIcon}>🏪</span>
+                    </div>
+                  )}
+                </div>
+                <div className={styles.categoryContent}>
+                  <h3 className={styles.categoryName}>{category.name}</h3>
+                  <span className={styles.categoryArrow}>→</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className={styles.noCategories}>
+            <p>No categories available at the moment.</p>
+          </div>
+        )}
+      </section>
+
+      {/* CTA Section */}
+      {categories.length > 0 && (
+        <section className={styles.ctaSection}>
+          <div className={styles.ctaContent}>
+            <h2 className={styles.ctaTitle}>Ready to Upgrade Your Kitchen?</h2>
+            <p className={styles.ctaDescription}>
+              Browse our complete collection and discover the perfect tools for
+              your culinary adventures.
+            </p>
+            <Link
+              href={`/categories/${categories[0].slug}`}
+              className={styles.ctaButton}
+            >
+              Start Shopping
+            </Link>
+          </div>
+        </section>
       )}
-      <ProductList products={filteredProducts} />
-    </section>
+    </div>
   )
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
-    const [categories, products] = await Promise.all([
-      CategoryService.getAll(),
-      ProductService.getAll(),
-    ])
+    const categories = await CategoryService.getAll()
 
     return {
       props: {
         categories,
-        products,
       },
     }
   } catch (error) {
-    console.error('Error fetching data:', error)
+    console.error('Error fetching categories:', error)
     return {
       props: {
         categories: [],
-        products: [],
       },
     }
   }
