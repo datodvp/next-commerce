@@ -116,9 +116,10 @@ const CreateProduct = () => {
         formData,
         imageFiles.length > 0 ? imageFiles : undefined,
       )
-      // Revalidate products list cache and categories cache (for product counts)
+      // Revalidate products list cache, categories cache, and flags cache (for product counts)
       await mutate('products/all')
       await mutate('categories/all')
+      await mutate('flags/all')
       router.push('/admin/products')
     } catch (err: unknown) {
       const errorMessage =

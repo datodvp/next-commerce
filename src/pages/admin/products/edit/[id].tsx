@@ -305,12 +305,13 @@ const EditProduct = () => {
         imageFiles.length > 0 ? imageFiles : undefined,
       )
 
-      // Revalidate products list cache, individual product cache, and categories cache (for product counts)
+      // Revalidate products list cache, individual product cache, categories cache, and flags cache (for product counts)
       await mutate('products/all')
       if (formData.id) {
         await mutate(`products/${formData.id}`)
       }
       await mutate('categories/all')
+      await mutate('flags/all')
       router.push('/admin/products')
     } catch (err: unknown) {
       const errorMessage =

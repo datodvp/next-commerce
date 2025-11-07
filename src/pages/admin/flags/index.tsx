@@ -70,7 +70,7 @@ const AdminFlags = () => {
         </div>
 
         {flags.length > 0 ? (
-          <AdminTable headers={['Name', 'Discount %', 'Actions']}>
+          <AdminTable headers={['Name', 'Discount %', 'Products', 'Actions']}>
             {flags.map((flag) => (
               <tr key={flag.id}>
                 <td>
@@ -80,6 +80,9 @@ const AdminFlags = () => {
                   <span className={styles.discount}>
                     {flag.discountPercentage}%
                   </span>
+                </td>
+                <td>
+                  <span className={styles.productCount}>{flag.productCount ?? 0}</span>
                 </td>
                 <td>
                   <div className={styles.actions}>

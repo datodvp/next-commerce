@@ -2,6 +2,7 @@ export interface IFlag {
   id: number
   name: string
   discountPercentage: number
+  productCount?: number // Number of products using this flag
 }
 
 export interface IProduct {

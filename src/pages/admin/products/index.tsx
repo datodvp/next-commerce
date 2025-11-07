@@ -38,9 +38,10 @@ const AdminProducts = () => {
     setDeletingId(id)
     try {
       await adminProductService.delete(id)
-      // Revalidate products cache and categories cache (for product counts)
+      // Revalidate products cache, categories cache, and flags cache (for product counts)
       await mutate()
       await globalMutate('categories/all')
+      await globalMutate('flags/all')
     } catch (error) {
       alert('Failed to delete product. Please try again.')
       console.error(error)
