@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { mutate } from 'swr'
 import AdminLayout from '@/admin/components/AdminLayout'
 import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
 import AdminCard from '@/admin/components/AdminCard'
@@ -52,6 +53,8 @@ const CreateFlag = () => {
 
     try {
       await adminFlagService.create(formData)
+      // Revalidate flags list cache before redirect
+      await mutate('flags/all')
       router.push('/admin/flags')
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create flag. Please try again.'

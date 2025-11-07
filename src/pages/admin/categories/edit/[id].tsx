@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { mutate } from 'swr'
 import AdminLayout from '@/admin/components/AdminLayout'
 import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
 import AdminCard from '@/admin/components/AdminCard'
@@ -77,6 +78,8 @@ const EditCategory = () => {
 
     try {
       await adminCategoryService.update(formData)
+      // Revalidate categories list cache before redirect
+      await mutate('categories/all')
       router.push('/admin/categories')
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update category. Please try again.'
