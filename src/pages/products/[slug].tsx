@@ -3,7 +3,7 @@ import { CategoryService, ProductService } from '@/services'
 import { IProduct } from '@/models/common/types'
 import Image from 'next/image'
 import styles from './styles.module.scss'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import AddToCartDetail from '@/components/ProductCard/AddToCartDetail'
 import { API_CONFIG } from '@/api/config'
 
@@ -25,14 +25,97 @@ const Product = ({ product }: IProps) => {
   const [currentPreviewImage, setCurrentPreviewImage] = useState<string>(
     normalizedImages[0]?.url || '',
   )
+  const [isDragging, setIsDragging] = useState(false)
+  const [startX, setStartX] = useState(0)
+  const [scrollLeft, setScrollLeft] = useState(0)
+  const hasMovedRef = useRef(false)
+  const thumbnailContainerRef = useRef<HTMLDivElement>(null)
 
   const updatePreviewImage = (image: string) => {
     setCurrentPreviewImage(image)
   }
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!thumbnailContainerRef.current) return
+    setIsDragging(true)
+    hasMovedRef.current = false
+    setStartX(e.pageX - thumbnailContainerRef.current.offsetLeft)
+    setScrollLeft(thumbnailContainerRef.current.scrollLeft)
+    thumbnailContainerRef.current.style.cursor = 'grabbing'
+    thumbnailContainerRef.current.style.userSelect = 'none'
+  }
+
+  const handleMouseLeave = () => {
+    if (!thumbnailContainerRef.current) return
+    setIsDragging(false)
+    hasMovedRef.current = false
+    thumbnailContainerRef.current.style.cursor = 'grab'
+    thumbnailContainerRef.current.style.userSelect = 'auto'
+  }
+
+  const handleMouseUp = () => {
+    if (!thumbnailContainerRef.current) return
+    setIsDragging(false)
+    // Reset after a brief delay to allow click event to check
+    setTimeout(() => {
+      hasMovedRef.current = false
+    }, 100)
+    thumbnailContainerRef.current.style.cursor = 'grab'
+    thumbnailContainerRef.current.style.userSelect = 'auto'
+  }
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging || !thumbnailContainerRef.current) return
+    e.preventDefault()
+    const x = e.pageX - thumbnailContainerRef.current.offsetLeft
+    const walk = (x - startX) * 2 // Scroll speed multiplier
+    
+    // Check if mouse has moved significantly (more than 5px) to distinguish drag from click
+    if (Math.abs(walk) > 5) {
+      hasMovedRef.current = true
+      thumbnailContainerRef.current.scrollLeft = scrollLeft - walk
+    }
+  }
+
+  const handleThumbnailClick = (imageUrl: string, e: React.MouseEvent) => {
+    // Only update preview if this was a click (not a drag)
+    if (!hasMovedRef.current) {
+      e.stopPropagation()
+      updatePreviewImage(imageUrl)
+    }
+  }
+
+  const handleThumbnailMouseEnter = (imageUrl: string) => {
+    // Only update on hover if not currently dragging
+    if (!isDragging) {
+      updatePreviewImage(imageUrl)
+    }
+  }
+
+  // Handle mouse up globally to catch cases where mouse is released outside container
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      if (isDragging) {
+        setIsDragging(false)
+        hasMovedRef.current = false
+        if (thumbnailContainerRef.current) {
+          thumbnailContainerRef.current.style.cursor = 'grab'
+          thumbnailContainerRef.current.style.userSelect = 'auto'
+        }
+      }
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('mouseup', handleGlobalMouseUp)
+      return () => {
+        window.removeEventListener('mouseup', handleGlobalMouseUp)
+      }
+    }
+  }, [isDragging])
   return (
     <main className={styles.root}>
       <section className={styles.productDetails}>
-        <div>
+        <div className={styles.imageSection}>
           {normalizedImages.length > 0 ? (
             <>
               <div className={styles.previewContainer}>
@@ -53,7 +136,14 @@ const Product = ({ product }: IProps) => {
                   />
                 ))}
               </div>
-              <div className={styles.smallerImagesContainer}>
+              <div 
+                ref={thumbnailContainerRef}
+                className={styles.smallerImagesContainer}
+                onMouseDown={handleMouseDown}
+                onMouseLeave={handleMouseLeave}
+                onMouseUp={handleMouseUp}
+                onMouseMove={handleMouseMove}
+              >
                 {normalizedImages.map((image) => (
                   <Image
                     src={image.url}
@@ -64,7 +154,9 @@ const Product = ({ product }: IProps) => {
                     priority
                     unoptimized
                     className={`${styles.smallerImage} ${image.url !== currentPreviewImage && styles.blurredImage}`}
-                    onMouseEnter={() => updatePreviewImage(image.url)}
+                    onMouseEnter={() => handleThumbnailMouseEnter(image.url)}
+                    onClick={(e) => handleThumbnailClick(image.url, e)}
+                    draggable={false}
                   />
                 ))}
               </div>
