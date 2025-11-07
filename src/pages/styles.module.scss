@@ -95,6 +95,7 @@
   flex-wrap: wrap;
   gap: 1.5rem;
   margin-top: 0.5rem;
+  justify-content: center;
 }
 
 .feature {
@@ -406,7 +407,7 @@
 
   .noResults {
     color: #666;
-    
+
     .query {
       font-style: italic;
       color: #3d7277;
