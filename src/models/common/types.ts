@@ -23,6 +23,8 @@ export interface ICategory {
   name: string
   slug: string
   image: string
+  order?: number // Optional for backwards compatibility
+  productCount?: number // Number of products in this category
 }
 
 export interface IImage {

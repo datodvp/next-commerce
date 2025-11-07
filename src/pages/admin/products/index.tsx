@@ -6,6 +6,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { mutate as globalMutate } from 'swr'
 import AdminLayout from '@/admin/components/AdminLayout'
 import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
 import AdminCard from '@/admin/components/AdminCard'
@@ -37,7 +38,9 @@ const AdminProducts = () => {
     setDeletingId(id)
     try {
       await adminProductService.delete(id)
-      mutate()
+      // Revalidate products cache and categories cache (for product counts)
+      await mutate()
+      await globalMutate('categories/all')
     } catch (error) {
       alert('Failed to delete product. Please try again.')
       console.error(error)
@@ -72,7 +75,7 @@ const AdminProducts = () => {
         </div>
 
         {products && products.length > 0 ? (
-          <AdminTable headers={['Image', 'ID', 'Title', 'Price', 'Category', 'Stock', 'Actions']}>
+          <AdminTable headers={['Image', 'Title', 'Price', 'Category', 'Stock', 'Actions']}>
             {products.map((product: import('@/models/common/types').IProduct) => {
               // Get first image or use placeholder
               const firstImage = product.images && product.images.length > 0 
@@ -106,7 +109,6 @@ const AdminProducts = () => {
                       )}
                     </div>
                   </td>
-                  <td>{product.id}</td>
                   <td>
                     <div className={styles.productInfo}>
                       <span className={styles.productTitle}>{product.title}</span>

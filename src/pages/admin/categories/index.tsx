@@ -11,15 +11,17 @@ import AdminCard from '@/admin/components/AdminCard'
 import AdminTable from '@/admin/components/AdminTable'
 import AdminButton from '@/admin/components/AdminButton'
 import { useCategories } from '@/hooks/api/useCategories'
-import { adminCategoryService } from '@/admin/services'
+import { adminCategoryService, UpdateCategoryOrderData } from '@/admin/services'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faTrash, faPlus, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons'
+import { ICategory } from '@/models/common/types'
 import styles from './categories.module.scss'
 
 const AdminCategories = () => {
   const { isAuthenticated, loading: authLoading, requireAuth } = useAdminAuth()
   const { categories, isLoading, mutate } = useCategories()
   const [deletingId, setDeletingId] = useState<number | null>(null)
+  const [reordering, setReordering] = useState(false)
 
   useEffect(() => {
     if (!authLoading && !requireAuth()) {
@@ -41,6 +43,44 @@ const AdminCategories = () => {
       console.error(error)
     } finally {
       setDeletingId(null)
+    }
+  }
+
+  const handleMoveUp = async (category: ICategory, index: number) => {
+    if (index === 0 || !categories) return
+
+    const prevCategory = categories[index - 1]
+    await handleReorder(category, prevCategory)
+  }
+
+  const handleMoveDown = async (category: ICategory, index: number) => {
+    if (!categories || index === categories.length - 1) return
+
+    const nextCategory = categories[index + 1]
+    await handleReorder(category, nextCategory)
+  }
+
+  const handleReorder = async (category1: ICategory, category2: ICategory) => {
+    if (reordering) return
+
+    setReordering(true)
+    try {
+      // Swap the orders, using index as fallback if order is missing
+      const order1 = category1.order ?? category1.id
+      const order2 = category2.order ?? category2.id
+      const updateData: UpdateCategoryOrderData = {
+        categories: [
+          { id: category1.id, order: order2 },
+          { id: category2.id, order: order1 },
+        ],
+      }
+      await adminCategoryService.updateOrder(updateData)
+      mutate()
+    } catch (error) {
+      alert('Failed to update category order. Please try again.')
+      console.error(error)
+    } finally {
+      setReordering(false)
     }
   }
 
@@ -70,15 +110,40 @@ const AdminCategories = () => {
         </div>
 
         {categories && categories.length > 0 ? (
-          <AdminTable headers={['ID', 'Name', 'Slug', 'Actions']}>
-            {categories.map((category: import('@/models/common/types').ICategory) => (
+          <AdminTable headers={['Order', 'Name', 'Slug', 'Products', 'Actions']}>
+            {categories.map((category: ICategory, index: number) => (
               <tr key={category.id}>
-                <td>{category.id}</td>
+                <td>
+                  <div className={styles.orderControls}>
+                    <span className={styles.orderNumber}>{category.order ?? index}</span>
+                    <div className={styles.orderButtons}>
+                      <button
+                        className={styles.orderButton}
+                        onClick={() => handleMoveUp(category, index)}
+                        disabled={reordering || index === 0}
+                        title="Move up"
+                      >
+                        <FontAwesomeIcon icon={faArrowUp} />
+                      </button>
+                      <button
+                        className={styles.orderButton}
+                        onClick={() => handleMoveDown(category, index)}
+                        disabled={reordering || index === categories.length - 1}
+                        title="Move down"
+                      >
+                        <FontAwesomeIcon icon={faArrowDown} />
+                      </button>
+                    </div>
+                  </div>
+                </td>
                 <td>
                   <span className={styles.categoryName}>{category.name}</span>
                 </td>
                 <td>
                   <span className={styles.categorySlug}>{category.slug}</span>
+                </td>
+                <td>
+                  <span className={styles.productCount}>{category.productCount ?? 0}</span>
                 </td>
                 <td>
                   <div className={styles.actions}>
@@ -90,7 +155,7 @@ const AdminCategories = () => {
                     <button
                       className={styles.deleteButton}
                       onClick={() => handleDelete(category.id)}
-                      disabled={deletingId === category.id}
+                      disabled={deletingId === category.id || reordering}
                     >
                       <FontAwesomeIcon icon={faTrash} />
                     </button>

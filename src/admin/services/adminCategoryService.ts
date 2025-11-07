@@ -16,6 +16,15 @@ export interface UpdateCategoryData extends Partial<CreateCategoryData> {
   id: number
 }
 
+export interface UpdateCategoryOrderItem {
+  id: number
+  order: number
+}
+
+export interface UpdateCategoryOrderData {
+  categories: UpdateCategoryOrderItem[]
+}
+
 class AdminCategoryService {
   /**
    * Create a new category
@@ -57,6 +66,17 @@ class AdminCategoryService {
   async getById(id: number): Promise<ICategory> {
     try {
       return await apiClient.get<ICategory>(`/categories/${id}`)
+    } catch (error) {
+      throw ApiError.fromAxiosError(error as import('axios').AxiosError<import('@/api/errors').ApiErrorResponse>)
+    }
+  }
+
+  /**
+   * Update category order (bulk update)
+   */
+  async updateOrder(data: UpdateCategoryOrderData): Promise<ICategory[]> {
+    try {
+      return await apiClient.post<ICategory[]>('/categories/reorder', data)
     } catch (error) {
       throw ApiError.fromAxiosError(error as import('axios').AxiosError<import('@/api/errors').ApiErrorResponse>)
     }
