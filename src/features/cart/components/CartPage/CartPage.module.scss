@@ -1,0 +1,33 @@
+@use '@/styles/_breakpoints' as *;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 1rem;
+  margin: auto;
+  min-height: 60vh;
+
+  @include respond-to(md) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  @include respond-to(lg) {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+}
+
+.products {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
+
+  @include respond-to(md) {
+    margin-bottom: 2rem;
+  }
+}
+

@@ -1,0 +1,76 @@
+@use '@/styles/colors' as *;
+@use '@/styles/_breakpoints' as *;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 1rem;
+  margin: auto;
+  min-height: 60vh;
+
+  @include respond-to(md) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  @include respond-to(lg) {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
+
+  @include respond-to(md) {
+    gap: 2rem;
+    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+
+  @include respond-to(lg) {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+
+  @include respond-to(md) {
+    margin-top: 3rem;
+  }
+}
+
+.continueShopping {
+  padding: 0.875rem 1.5rem;
+  background-color: transparent;
+  color: $primary-green;
+  border: 2px solid $primary-green;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s ease;
+  @include touch-target;
+  @include focus-visible;
+
+  @include respond-to(md) {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    background-color: $primary-green;
+    color: white;
+  }
+}
+

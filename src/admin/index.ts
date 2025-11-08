@@ -5,5 +5,5 @@
 
 export * from './services'
 export * from './utils/auth'
-export { useAdminAuth } from './hooks/useAdminAuth'
+export * from './hooks'
 

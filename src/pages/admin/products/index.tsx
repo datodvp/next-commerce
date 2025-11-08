@@ -3,12 +3,12 @@
  * List all products with edit/delete actions
  */
 
-import { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { mutate as globalMutate } from 'swr'
 import AdminLayout from '@/admin/components/AdminLayout'
-import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
+import AdminPageWrapper from '@/admin/components/AdminPageWrapper'
 import AdminCard from '@/admin/components/AdminCard'
 import AdminTable from '@/admin/components/AdminTable'
 import AdminButton from '@/admin/components/AdminButton'
@@ -16,19 +16,13 @@ import { useProducts } from '@/hooks/api/useProducts'
 import { adminProductService } from '@/admin/services'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { API_CONFIG } from '@/api/config'
+import { getFirstImageUrl } from '@/utils/imageUtils'
+import { formatPriceWithCurrency } from '@/utils/priceUtils'
 import styles from './products.module.scss'
 
 const AdminProducts = () => {
-  const { isAuthenticated, loading: authLoading, requireAuth } = useAdminAuth()
   const { products, isLoading, mutate } = useProducts()
   const [deletingId, setDeletingId] = useState<number | null>(null)
-
-  useEffect(() => {
-    if (!authLoading && !requireAuth()) {
-      return
-    }
-  }, [authLoading, requireAuth])
 
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this product?')) {
@@ -50,20 +44,9 @@ const AdminProducts = () => {
     }
   }
 
-  if (authLoading || isLoading) {
-    return (
-      <AdminLayout>
-        <div className={styles.loading}>Loading...</div>
-      </AdminLayout>
-    )
-  }
-
-  if (!isAuthenticated) {
-    return null
-  }
-
   return (
-    <AdminLayout>
+    <AdminPageWrapper loading={isLoading}>
+      <AdminLayout>
       <AdminCard>
         <div className={styles.header}>
           <h3>Products</h3>
@@ -78,17 +61,7 @@ const AdminProducts = () => {
         {products && products.length > 0 ? (
           <AdminTable headers={['Image', 'Title', 'Price', 'Category', 'Stock', 'Actions']}>
             {products.map((product: import('@/models/common/types').IProduct) => {
-              // Get first image or use placeholder
-              const firstImage = product.images && product.images.length > 0 
-                ? product.images[0].url 
-                : null
-              
-              // Make image URL absolute if it's relative
-              const imageUrl = firstImage
-                ? firstImage.startsWith('http') 
-                  ? firstImage 
-                  : `${API_CONFIG.baseURL}${firstImage}`
-                : null
+              const imageUrl = getFirstImageUrl(product.images)
 
               return (
                 <tr key={product.id}>
@@ -116,7 +89,7 @@ const AdminProducts = () => {
                       <span className={styles.productSlug}>{product.slug}</span>
                     </div>
                   </td>
-                  <td>${product.price.toFixed(2)}</td>
+                  <td>{formatPriceWithCurrency(product.price)}</td>
                   <td>{product.category?.name || 'N/A'}</td>
                   <td>{product.stock || 0}</td>
                   <td>
@@ -149,6 +122,7 @@ const AdminProducts = () => {
         )}
       </AdminCard>
     </AdminLayout>
+    </AdminPageWrapper>
   )
 }
 

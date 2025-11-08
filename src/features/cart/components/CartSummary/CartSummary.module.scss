@@ -1,0 +1,134 @@
+@use '@/styles/colors' as *;
+@use '@/styles/_breakpoints' as *;
+
+.summary {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  padding: 1.25rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  margin-top: 1.5rem;
+
+  @include respond-to(md) {
+    align-items: flex-end;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-top: 2rem;
+  }
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+
+  @include respond-to(md) {
+    max-width: 18.75rem;
+    font-size: 0.95rem;
+  }
+
+  .label {
+    color: #666;
+  }
+
+  .value {
+    font-weight: 600;
+    color: #333;
+  }
+}
+
+.totalRow {
+  border-top: 2px solid #ddd;
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  font-size: 1.125rem;
+
+  @include respond-to(md) {
+    font-size: 1.25rem;
+  }
+
+  .label {
+    color: #333;
+    font-weight: 700;
+  }
+
+  .value {
+    font-weight: 700;
+    color: $primary-green;
+    font-size: 1.375rem;
+
+    @include respond-to(md) {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+.checkoutButton {
+  padding: 0.875rem 1.5rem;
+  background-color: $primary-green;
+  color: white;
+  border: 2px solid $primary-green;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  margin-top: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  @include touch-target;
+  @include focus-visible;
+
+  @include respond-to(md) {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    max-width: 18.75rem;
+  }
+
+  &:hover {
+    background-color: #2d5a5f;
+    border-color: #2d5a5f;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+.continueShopping {
+  padding: 0.875rem 1.5rem;
+  background-color: transparent;
+  color: $primary-green;
+  border: 2px solid $primary-green;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  @include touch-target;
+  @include focus-visible;
+
+  @include respond-to(md) {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    max-width: 18.75rem;
+  }
+
+  &:hover {
+    background-color: $primary-green;
+    color: white;
+  }
+}

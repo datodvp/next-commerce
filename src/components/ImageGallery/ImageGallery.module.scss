@@ -1,0 +1,133 @@
+@use '@/styles/_breakpoints' as *;
+
+.gallery {
+  width: 100%;
+  max-width: 100%;
+}
+
+.imageSection {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  @include respond-to(lg) {
+    width: 43.75rem;
+    max-width: 43.75rem;
+    flex-shrink: 0;
+  }
+}
+
+.previewContainer {
+  width: 100%;
+  position: relative;
+  aspect-ratio: 1;
+  background-color: #f5f5f5;
+  border-radius: 1rem;
+  overflow: hidden;
+  max-width: 100%;
+
+  @include respond-to(md) {
+    border-radius: 1.25rem;
+  }
+
+  @include respond-to(lg) {
+    width: 43.75rem;
+    max-width: 43.75rem;
+    height: 43.75rem;
+    flex-shrink: 0;
+  }
+
+  img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.image {
+  border-radius: 1rem;
+
+  @include respond-to(md) {
+    border-radius: 1.25rem;
+  }
+}
+
+.thumbnailContainer {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  width: 100%;
+  max-width: 100%;
+  cursor: grab;
+  user-select: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  @include respond-to(md) {
+    gap: 0.625rem;
+    margin-top: 1rem;
+  }
+
+  @include respond-to(lg) {
+    width: 43.75rem;
+    max-width: 43.75rem;
+  }
+}
+
+.thumbnail {
+  border-radius: 0.75rem;
+  flex-shrink: 0;
+  width: 5rem;
+  height: 5rem;
+  cursor: pointer;
+  object-fit: cover;
+  pointer-events: auto;
+  user-select: none;
+  transition: opacity 0.2s ease;
+
+  @include respond-to(md) {
+    width: 6.25rem;
+    height: 6.25rem;
+    border-radius: 1rem;
+  }
+
+  @include respond-to(lg) {
+    width: 9.375rem;
+    height: 9.375rem;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &.blurred {
+    opacity: 0.5;
+  }
+}
+
+.noImage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0f0;
+  color: #999;
+  font-size: 1rem;
+  border-radius: 1rem;
+  min-height: 200px;
+
+  @include respond-to(md) {
+    font-size: 1.1rem;
+    min-height: 300px;
+  }
+}
+

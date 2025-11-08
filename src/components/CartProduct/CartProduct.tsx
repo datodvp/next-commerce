@@ -4,7 +4,8 @@ import Image from 'next/image'
 import styles from './CartProduct.module.scss'
 import { useAppDispatch } from '@/stores'
 import ConfirmationModal from '@/components/ConfirmationModal/ConfirmationModal'
-import { API_CONFIG } from '@/api/config'
+import PriceDisplay from '@/components/PriceDisplay'
+import { getFirstImageUrl } from '@/utils/imageUtils'
 
 interface IProps {
   product: IProductWithQuantity
@@ -28,19 +29,10 @@ const CartProduct = ({ product }: IProps): React.ReactElement => {
 
   const confirmRemove = () => {
     dispatch(removeProduct(product))
+    setShowConfirmModal(false)
   }
 
-  // Get first image or use placeholder
-  const firstImage = product.images && product.images.length > 0 
-    ? product.images[0].url 
-    : null
-  
-  // Make image URL absolute if it's relative
-  const imageUrl = firstImage
-    ? firstImage.startsWith('http') 
-      ? firstImage 
-      : `${API_CONFIG.baseURL}${firstImage}`
-    : null
+  const imageUrl = getFirstImageUrl(product.images)
 
   return (
     <>
@@ -62,16 +54,11 @@ const CartProduct = ({ product }: IProps): React.ReactElement => {
         <div className={styles.info}>
           <span className={styles.title}>{product.title}</span>
           <span className={styles.description}>{product.description}</span>
-          <div className={styles.priceContainer}>
-            {product.discountedPrice && product.discountedPrice < product.price ? (
-              <>
-                <span className={styles.originalPrice}>$ {product.price.toFixed(2)}</span>
-                <span className={styles.discountedPrice}>$ {product.discountedPrice.toFixed(2)}</span>
-              </>
-            ) : (
-              <span className={styles.price}>$ {product.price.toFixed(2)}</span>
-            )}
-          </div>
+          <PriceDisplay
+            price={product.price}
+            discountedPrice={product.discountedPrice}
+            variant="inline"
+          />
           <div className={styles.addition}>
             <button
               onClick={handleRemoveFromCart}

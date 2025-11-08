@@ -1,0 +1,85 @@
+@use '@/styles/colors' as *;
+@use '@/styles/_breakpoints' as *;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  min-height: 400px;
+
+  @include respond-to(md) {
+    padding: 4rem 2rem;
+    min-height: 500px;
+  }
+}
+
+.icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.7;
+
+  @include respond-to(md) {
+    font-size: 5rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: $secondary-black;
+
+  @include respond-to(md) {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.message {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  max-width: 500px;
+  line-height: 1.6;
+
+  @include respond-to(md) {
+    font-size: 1.125rem;
+    margin-bottom: 2.5rem;
+  }
+}
+
+.link,
+.button {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background-color: $primary-green;
+  color: white;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+
+  &:hover {
+    background-color: darken($primary-green, 10%);
+  }
+
+  @include respond-to(md) {
+    padding: 1rem 2.5rem;
+    font-size: 1.125rem;
+  }
+}
+
+.button {
+  &:focus {
+    outline: 2px solid $primary-green;
+    outline-offset: 2px;
+  }
+}
+

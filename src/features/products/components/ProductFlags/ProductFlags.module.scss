@@ -1,0 +1,31 @@
+@use '@/styles/_breakpoints' as *;
+
+.flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+
+  @include respond-to(md) {
+    margin-top: 1.5rem;
+    gap: 1rem;
+  }
+}
+
+.flagBadge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #ff6b6b;
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  @include respond-to(md) {
+    font-size: 1rem;
+    padding: 0.625rem 1.25rem;
+  }
+}

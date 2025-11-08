@@ -3,12 +3,12 @@
  * Form to edit an existing product
  */
 
-import { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import { mutate } from 'swr'
 import AdminLayout from '@/admin/components/AdminLayout'
-import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
+import AdminPageWrapper from '@/admin/components/AdminPageWrapper'
 import AdminCard from '@/admin/components/AdminCard'
 import AdminForm, {
   FormGroup,
@@ -22,12 +22,11 @@ import { useFlags } from '@/hooks/api/useFlags'
 import { adminProductService, UpdateProductData } from '@/admin/services'
 import { IProduct } from '@/models/common/types'
 import styles from '@/pages/admin/products/product-form.module.scss'
-import { API_CONFIG } from '@/api/config'
+import { normalizeImageUrl } from '@/utils/imageUtils'
 
 const EditProduct = () => {
   const router = useRouter()
   const { id } = router.query
-  const { isAuthenticated, loading: authLoading, requireAuth } = useAdminAuth()
   const { categories, isLoading: categoriesLoading } = useCategories()
   const { flags, isLoading: flagsLoading } = useFlags()
   const [product, setProduct] = useState<IProduct | null>(null)
@@ -60,11 +59,6 @@ const EditProduct = () => {
   >([])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    if (!authLoading && !requireAuth()) {
-      return
-    }
-  }, [authLoading, requireAuth])
 
   // Cleanup object URLs on unmount
   useEffect(() => {
@@ -85,9 +79,7 @@ const EditProduct = () => {
         const images =
           productData.images?.map((img) => ({
             id: img.id,
-            url: img.url.startsWith('/')
-              ? `${API_CONFIG.baseURL}${img.url}`
-              : img.url,
+            url: normalizeImageUrl(img.url),
             order: img.order ?? 0,
           })) || []
 
@@ -160,9 +152,7 @@ const EditProduct = () => {
       const images =
         productData.images?.map((img) => ({
           id: img.id,
-          url: img.url.startsWith('/')
-            ? `${API_CONFIG.baseURL}${img.url}`
-            : img.url,
+          url: normalizeImageUrl(img.url),
           order: img.order ?? 0,
         })) || []
       const sortedImages = [...images].sort(
@@ -325,20 +315,17 @@ const EditProduct = () => {
     }
   }
 
-  if (authLoading || categoriesLoading || flagsLoading || isLoading) {
+  if (!product) {
     return (
-      <AdminLayout>
-        <div className={styles.loading}>Loading...</div>
-      </AdminLayout>
+      <AdminPageWrapper loading={isLoading}>
+        <AdminLayout />
+      </AdminPageWrapper>
     )
   }
 
-  if (!isAuthenticated || !product) {
-    return null
-  }
-
   return (
-    <AdminLayout>
+    <AdminPageWrapper loading={categoriesLoading || flagsLoading || isLoading}>
+      <AdminLayout>
       <AdminCard>
         <h3>Edit Product</h3>
 
@@ -555,6 +542,7 @@ const EditProduct = () => {
         </AdminForm>
       </AdminCard>
     </AdminLayout>
+    </AdminPageWrapper>
   )
 }
 

@@ -4,24 +4,15 @@ import styles from './ProductCard.module.scss'
 import AddToCart from './AddToCart'
 import AddToFavourites from './AddToFavourites'
 import Hologram from '../CartProduct/Hologram'
+import PriceDisplay from '@/components/PriceDisplay'
 import Link from 'next/link'
-import { API_CONFIG } from '@/api/config'
+import { getFirstImageUrl } from '@/utils/imageUtils'
 
 interface IProps {
   product: IProduct
 }
 const ProductCard = ({ product }: IProps) => {
-  // Get first image or use placeholder
-  const firstImage = product.images && product.images.length > 0 
-    ? product.images[0].url 
-    : null
-  
-  // Make image URL absolute if it's relative
-  const imageUrl = firstImage
-    ? firstImage.startsWith('http') 
-      ? firstImage 
-      : `${API_CONFIG.baseURL}${firstImage}`
-    : null
+  const imageUrl = getFirstImageUrl(product.images)
 
   return (
     <Hologram>
@@ -55,16 +46,11 @@ const ProductCard = ({ product }: IProps) => {
               </div>
             )}
             <span className={styles.title}>{product.title}</span>
-            <div className={styles.priceContainer}>
-              {product.discountedPrice && product.discountedPrice < product.price ? (
-                <>
-                  <span className={styles.originalPrice}>${product.price.toFixed(2)}</span>
-                  <span className={styles.discountedPrice}>${product.discountedPrice.toFixed(2)}</span>
-                </>
-              ) : (
-                <span className={styles.price}>${product.price.toFixed(2)}</span>
-              )}
-            </div>
+            <PriceDisplay
+              price={product.price}
+              discountedPrice={product.discountedPrice}
+              variant="card"
+            />
           </Link>
           <div className={styles.actionsWrapper}>
             <AddToFavourites product={product} />

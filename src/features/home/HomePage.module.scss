@@ -1,0 +1,18 @@
+@use '@/styles/_breakpoints' as *;
+
+.landingPage {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  overflow-x: hidden;
+
+  @include respond-to(md) {
+    padding: 0 2rem;
+  }
+
+  @include respond-to(lg) {
+    padding: 0 4rem;
+  }
+}
+

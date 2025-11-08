@@ -3,10 +3,10 @@
  * List all categories with edit/delete actions
  */
 
-import { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import AdminLayout from '@/admin/components/AdminLayout'
-import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
+import AdminPageWrapper from '@/admin/components/AdminPageWrapper'
 import AdminCard from '@/admin/components/AdminCard'
 import AdminTable from '@/admin/components/AdminTable'
 import AdminButton from '@/admin/components/AdminButton'
@@ -18,16 +18,9 @@ import { ICategory } from '@/models/common/types'
 import styles from './categories.module.scss'
 
 const AdminCategories = () => {
-  const { isAuthenticated, loading: authLoading, requireAuth } = useAdminAuth()
   const { categories, isLoading, mutate } = useCategories()
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [reordering, setReordering] = useState(false)
-
-  useEffect(() => {
-    if (!authLoading && !requireAuth()) {
-      return
-    }
-  }, [authLoading, requireAuth])
 
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this category?')) {
@@ -84,20 +77,9 @@ const AdminCategories = () => {
     }
   }
 
-  if (authLoading || isLoading) {
-    return (
-      <AdminLayout>
-        <div className={styles.loading}>Loading...</div>
-      </AdminLayout>
-    )
-  }
-
-  if (!isAuthenticated) {
-    return null
-  }
-
   return (
-    <AdminLayout>
+    <AdminPageWrapper loading={isLoading}>
+      <AdminLayout>
       <AdminCard>
         <div className={styles.header}>
           <h3>Categories</h3>
@@ -174,6 +156,7 @@ const AdminCategories = () => {
         )}
       </AdminCard>
     </AdminLayout>
+    </AdminPageWrapper>
   )
 }
 

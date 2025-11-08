@@ -3,10 +3,10 @@
  * List all flags with edit/delete actions
  */
 
-import { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import AdminLayout from '@/admin/components/AdminLayout'
-import { useAdminAuth } from '@/admin/hooks/useAdminAuth'
+import AdminPageWrapper from '@/admin/components/AdminPageWrapper'
 import AdminCard from '@/admin/components/AdminCard'
 import AdminTable from '@/admin/components/AdminTable'
 import AdminButton from '@/admin/components/AdminButton'
@@ -17,15 +17,8 @@ import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import styles from './flags.module.scss'
 
 const AdminFlags = () => {
-  const { isAuthenticated, loading: authLoading, requireAuth } = useAdminAuth()
   const { flags, isLoading, mutate } = useFlags()
   const [deletingId, setDeletingId] = useState<number | null>(null)
-
-  useEffect(() => {
-    if (!authLoading && !requireAuth()) {
-      return
-    }
-  }, [authLoading, requireAuth])
 
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this flag?')) {
@@ -44,20 +37,9 @@ const AdminFlags = () => {
     }
   }
 
-  if (authLoading || isLoading) {
-    return (
-      <AdminLayout>
-        <div className={styles.loading}>Loading...</div>
-      </AdminLayout>
-    )
-  }
-
-  if (!isAuthenticated) {
-    return null
-  }
-
   return (
-    <AdminLayout>
+    <AdminPageWrapper loading={isLoading}>
+      <AdminLayout>
       <AdminCard>
         <div className={styles.header}>
           <h3>Flags</h3>
@@ -113,6 +95,7 @@ const AdminFlags = () => {
         )}
       </AdminCard>
     </AdminLayout>
+    </AdminPageWrapper>
   )
 }
 

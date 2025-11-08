@@ -1,0 +1,32 @@
+@use '@/styles/_breakpoints' as *;
+
+.root {
+  padding: 1rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @include respond-to(md) {
+    padding: 2rem 2rem;
+  }
+
+  @include respond-to(lg) {
+    padding: 3rem 4rem;
+  }
+}
+
+.productDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  @include respond-to(md) {
+    gap: 3rem;
+  }
+
+  @include respond-to(lg) {
+    flex-direction: row;
+    gap: 4.375rem;
+  }
+}
+
