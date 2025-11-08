@@ -22,6 +22,9 @@ const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
     handleMouseLeave,
     handleMouseUp,
     handleMouseMove,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
     handleThumbnailClick,
     handleThumbnailMouseEnter,
     handleThumbnailMouseLeave,
@@ -65,6 +68,9 @@ const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
             onMouseLeave={handleMouseLeave}
             onMouseUp={handleMouseUp}
             onMouseMove={handleMouseMove}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
             {normalizedImages.map((image) => (
               <div

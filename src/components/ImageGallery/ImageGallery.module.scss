@@ -59,19 +59,21 @@
   gap: 0.5rem;
   margin-top: 0.75rem;
   overflow-x: auto;
+  overflow-y: hidden;
   padding-bottom: 0.5rem;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
+  scroll-behavior: smooth;
   width: 100%;
   max-width: 100%;
   cursor: grab;
   user-select: none;
   position: relative;
+  scroll-snap-type: x proximity;
 
   &:active {
     cursor: grabbing;
   }
-
 
   @include respond-to(md) {
     gap: 0.625rem;
@@ -90,9 +92,15 @@
   pointer-events: auto;
   position: relative;
   z-index: 1;
-  
+  scroll-snap-align: start;
+
   &:hover {
     z-index: 2;
+  }
+
+  // When container is being dragged, show grab cursor
+  .thumbnailContainer:active & {
+    cursor: grabbing;
   }
 }
 
@@ -140,4 +148,3 @@
     min-height: 300px;
   }
 }
-

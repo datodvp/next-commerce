@@ -16,6 +16,7 @@ export const useImageGallery = ({ images }: UseImageGalleryProps) => {
   const initializedRef = useRef(false)
   const imagesUrlsRef = useRef<string>('')
   const currentImageRef = useRef<string>(images[0]?.url || '')
+  const isTouchDeviceRef = useRef(false)
 
   const updatePreviewImage = (imageUrl: string) => {
     hasUserSelectedImageRef.current = true
@@ -23,20 +24,34 @@ export const useImageGallery = ({ images }: UseImageGalleryProps) => {
     setCurrentImage(imageUrl)
   }
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Don't start dragging if clicking directly on a thumbnail
-    const target = e.target as HTMLElement
-    if (target.closest('[data-thumbnail="true"]')) {
-      return
-    }
-
+  const startDrag = (clientX: number) => {
     if (!thumbnailContainerRef.current) return
+
     setIsDragging(true)
     hasMovedRef.current = false
-    setStartX(e.pageX - thumbnailContainerRef.current.offsetLeft)
+    const rect = thumbnailContainerRef.current.getBoundingClientRect()
+    setStartX(clientX - rect.left)
     setScrollLeft(thumbnailContainerRef.current.scrollLeft)
     thumbnailContainerRef.current.style.cursor = 'grabbing'
     thumbnailContainerRef.current.style.userSelect = 'none'
+  }
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!thumbnailContainerRef.current) return
+
+    // Allow dragging even when starting on a thumbnail
+    // We'll check movement distance to distinguish between click and drag
+    startDrag(e.clientX)
+    e.preventDefault()
+  }
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!thumbnailContainerRef.current) return
+
+    isTouchDeviceRef.current = true
+    const touch = e.touches[0]
+    startDrag(touch.clientX)
+    e.preventDefault()
   }
 
   const handleMouseLeave = () => {
@@ -47,53 +62,82 @@ export const useImageGallery = ({ images }: UseImageGalleryProps) => {
     thumbnailContainerRef.current.style.userSelect = 'auto'
   }
 
-  const handleMouseUp = () => {
+  const endDrag = () => {
     if (!thumbnailContainerRef.current) return
+
+    const wasDragging = isDragging && hasMovedRef.current
     setIsDragging(false)
-    // Reset hasMovedRef after a short delay to allow click detection
-    // This delay should be short enough not to interfere with hover
+
+    // Reset after a short delay to allow click detection
     setTimeout(() => {
       hasMovedRef.current = false
-    }, 50)
+    }, 100)
+
+    // Restore cursor and selection
     thumbnailContainerRef.current.style.cursor = 'grab'
     thumbnailContainerRef.current.style.userSelect = 'auto'
+
+    // If we were dragging, re-enable hover on thumbnails
+    if (wasDragging) {
+      isOverThumbnailRef.current = false
+    }
+  }
+
+  const handleMouseUp = () => {
+    endDrag()
+  }
+
+  const handleTouchEnd = () => {
+    endDrag()
+    isTouchDeviceRef.current = false
+  }
+
+  const updateDrag = (clientX: number) => {
+    if (!isDragging || !thumbnailContainerRef.current) return
+
+    const rect = thumbnailContainerRef.current.getBoundingClientRect()
+    const currentX = clientX - rect.left
+    const walk = (startX - currentX) * 1.5 // Drag distance (positive = dragged left, negative = dragged right)
+    const dragDistance = Math.abs(walk)
+
+    // If we've moved enough, this is a drag operation
+    if (dragDistance > 3) {
+      hasMovedRef.current = true
+
+      // Update scroll position
+      // When dragging left (walk > 0), scroll right (scrollLeft increases)
+      // When dragging right (walk < 0), scroll left (scrollLeft decreases)
+      thumbnailContainerRef.current.scrollLeft = scrollLeft + walk
+
+      // Update thumbnail hover state - don't trigger hover during active drag
+      isOverThumbnailRef.current = false
+    }
   }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Check if mouse is over a thumbnail first - if so, don't handle drag
-    const target = e.target as HTMLElement
-    const isOverThumbnail = target.closest('[data-thumbnail="true"]') !== null
-    isOverThumbnailRef.current = isOverThumbnail
-
-    if (isOverThumbnail) {
-      // If we were dragging, stop it when entering thumbnail area
-      if (isDragging) {
-        setIsDragging(false)
-        hasMovedRef.current = false
-        if (thumbnailContainerRef.current) {
-          thumbnailContainerRef.current.style.cursor = 'default'
-          thumbnailContainerRef.current.style.userSelect = 'auto'
-        }
-      }
-      // Don't prevent default or handle drag when over thumbnail
-      return
+    updateDrag(e.clientX)
+    if (hasMovedRef.current) {
+      e.preventDefault()
+      e.stopPropagation()
     }
+  }
 
-    if (!isDragging || !thumbnailContainerRef.current) return
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isDragging) return
 
-    e.preventDefault()
-    const x = e.pageX - thumbnailContainerRef.current.offsetLeft
-    const walk = (x - startX) * 2
-
-    if (Math.abs(walk) > 5) {
-      hasMovedRef.current = true
-      thumbnailContainerRef.current.scrollLeft = scrollLeft - walk
+    const touch = e.touches[0]
+    updateDrag(touch.clientX)
+    if (hasMovedRef.current) {
+      e.preventDefault()
+      e.stopPropagation()
     }
   }
 
   const handleThumbnailClick = (imageUrl: string, e: React.MouseEvent) => {
+    // Only trigger click if we didn't drag (moved less than threshold)
     if (!hasMovedRef.current) {
       e.stopPropagation()
+      e.preventDefault()
       updatePreviewImage(imageUrl)
     }
   }
@@ -102,23 +146,18 @@ export const useImageGallery = ({ images }: UseImageGalleryProps) => {
     imageUrl: string,
     e?: React.MouseEvent,
   ) => {
-    isOverThumbnailRef.current = true
-
-    // Stop any active dragging
-    if (isDragging) {
-      setIsDragging(false)
-      hasMovedRef.current = false
-      if (thumbnailContainerRef.current) {
-        thumbnailContainerRef.current.style.cursor = 'default'
-        thumbnailContainerRef.current.style.userSelect = 'auto'
-      }
+    // Don't trigger hover if we're actively dragging
+    if (isDragging && hasMovedRef.current) {
+      return
     }
+
+    isOverThumbnailRef.current = true
 
     if (e) {
       e.stopPropagation()
     }
-    // Always update preview on hover, regardless of drag state
-    // This ensures hover works even if dragging was triggered
+
+    // Update preview on hover only if not dragging
     updatePreviewImage(imageUrl)
   }
 
@@ -193,6 +232,9 @@ export const useImageGallery = ({ images }: UseImageGalleryProps) => {
     handleMouseLeave,
     handleMouseUp,
     handleMouseMove,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
     handleThumbnailClick,
     handleThumbnailMouseEnter,
     handleThumbnailMouseLeave,
