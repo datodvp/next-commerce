@@ -16,7 +16,7 @@ export const normalizeImageUrl = (url: string): string => {
  * @returns The normalized first image URL or null
  */
 export const getFirstImageUrl = (
-  images?: Array<{ url: string; [key: string]: unknown }>,
+  images?: Array<{ url: string }>,
 ): string | null => {
   if (!images || images.length === 0) return null
   const firstImage = images[0]?.url

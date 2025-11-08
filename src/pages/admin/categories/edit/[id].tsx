@@ -47,7 +47,9 @@ const EditCategory = () => {
   if (!initialData) {
     return (
       <AdminPageWrapper loading={isLoading}>
-        <AdminLayout />
+        <AdminLayout>
+          <div>Loading category...</div>
+        </AdminLayout>
       </AdminPageWrapper>
     )
   }

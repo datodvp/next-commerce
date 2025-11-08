@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 interface UseImageUploadReturn {
   imageFiles: File[]
   imagePreviewUrls: string[]
-  fileInputRef: React.RefObject<HTMLInputElement>
+  fileInputRef: React.RefObject<HTMLInputElement | null>
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   handleRemovePreviewImage: (index: number) => void
   clearImages: () => void

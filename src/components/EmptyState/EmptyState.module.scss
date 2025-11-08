@@ -1,5 +1,6 @@
 @use '@/styles/colors' as *;
 @use '@/styles/_breakpoints' as *;
+@use 'sass:color';
 
 .root {
   display: flex;
@@ -67,7 +68,7 @@
   font-size: 1rem;
 
   &:hover {
-    background-color: darken($primary-green, 10%);
+    background-color: color.adjust($primary-green, $lightness: -10%);
   }
 
   @include respond-to(md) {

@@ -51,7 +51,10 @@ export const useFlagForm = ({
         return
       }
 
-      if (formData.discountPercentage < 0 || formData.discountPercentage > 100) {
+      if (
+        formData.discountPercentage !== undefined &&
+        (formData.discountPercentage < 0 || formData.discountPercentage > 100)
+      ) {
         setError('Discount percentage must be between 0 and 100')
         return
       }

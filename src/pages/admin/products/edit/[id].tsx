@@ -318,7 +318,9 @@ const EditProduct = () => {
   if (!product) {
     return (
       <AdminPageWrapper loading={isLoading}>
-        <AdminLayout />
+        <AdminLayout>
+          <div>Loading product...</div>
+        </AdminLayout>
       </AdminPageWrapper>
     )
   }

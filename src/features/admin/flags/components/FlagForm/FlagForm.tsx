@@ -49,7 +49,9 @@ const FlagForm: React.FC<FlagFormProps> = ({
         <FormGroup
           label="Discount Percentage *"
           error={
-            error && (formData.discountPercentage < 0 || formData.discountPercentage > 100)
+            error &&
+            formData.discountPercentage !== undefined &&
+            (formData.discountPercentage < 0 || formData.discountPercentage > 100)
               ? 'Discount must be between 0 and 100'
               : ''
           }

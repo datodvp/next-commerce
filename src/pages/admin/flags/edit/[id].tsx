@@ -47,7 +47,9 @@ const EditFlag = () => {
   if (!initialData) {
     return (
       <AdminPageWrapper loading={isLoading}>
-        <AdminLayout />
+        <AdminLayout>
+          <div>Loading flag...</div>
+        </AdminLayout>
       </AdminPageWrapper>
     )
   }

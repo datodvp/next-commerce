@@ -56,7 +56,7 @@ export const useCategoryForm = ({
       try {
         if ('id' in formData && formData.id) {
           // Update existing category
-          await adminCategoryService.update(formData.id, formData as UpdateCategoryData)
+          await adminCategoryService.update(formData as UpdateCategoryData)
         } else {
           // Create new category
           await adminCategoryService.create(formData as CreateCategoryData)
