@@ -19,6 +19,12 @@ export const useImageGallery = ({ images }: UseImageGalleryProps) => {
   }
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Don't start dragging if clicking directly on a thumbnail
+    const target = e.target as HTMLElement
+    if (target.closest('[data-thumbnail="true"]')) {
+      return
+    }
+    
     if (!thumbnailContainerRef.current) return
     setIsDragging(true)
     hasMovedRef.current = false
@@ -39,15 +45,24 @@ export const useImageGallery = ({ images }: UseImageGalleryProps) => {
   const handleMouseUp = () => {
     if (!thumbnailContainerRef.current) return
     setIsDragging(false)
+    // Reset hasMovedRef after a short delay to allow click detection
+    // This delay should be short enough not to interfere with hover
     setTimeout(() => {
       hasMovedRef.current = false
-    }, 100)
+    }, 50)
     thumbnailContainerRef.current.style.cursor = 'grab'
     thumbnailContainerRef.current.style.userSelect = 'auto'
   }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isDragging || !thumbnailContainerRef.current) return
+    
+    // Don't handle drag if mouse is over a thumbnail
+    const target = e.target as HTMLElement
+    if (target.closest('[data-thumbnail="true"]')) {
+      return
+    }
+    
     e.preventDefault()
     const x = e.pageX - thumbnailContainerRef.current.offsetLeft
     const walk = (x - startX) * 2
@@ -65,7 +80,12 @@ export const useImageGallery = ({ images }: UseImageGalleryProps) => {
     }
   }
 
-  const handleThumbnailMouseEnter = (imageUrl: string) => {
+  const handleThumbnailMouseEnter = (imageUrl: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation()
+    }
+    // Update preview on hover, but only if not actively dragging
+    // hasMovedRef is only used to prevent click events, not hover
     if (!isDragging) {
       updatePreviewImage(imageUrl)
     }

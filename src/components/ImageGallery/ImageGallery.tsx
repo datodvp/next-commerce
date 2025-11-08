@@ -65,20 +65,28 @@ const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
             onMouseMove={handleMouseMove}
           >
             {normalizedImages.map((image) => (
-              <Image
+              <div
                 key={image.id || image.url}
-                src={image.url}
-                alt={alt}
-                width={150}
-                height={150}
-                unoptimized
-                className={`${styles.thumbnail} ${
-                  image.url !== currentImage ? styles.blurred : ''
-                }`}
-                onMouseEnter={() => handleThumbnailMouseEnter(image.url)}
+                className={styles.thumbnailWrapper}
+                data-thumbnail="true"
+                onMouseEnter={(e) => {
+                  e.stopPropagation()
+                  handleThumbnailMouseEnter(image.url, e)
+                }}
                 onClick={(e) => handleThumbnailClick(image.url, e)}
-                draggable={false}
-              />
+              >
+                <Image
+                  src={image.url}
+                  alt={alt}
+                  width={150}
+                  height={150}
+                  unoptimized
+                  className={`${styles.thumbnail} ${
+                    image.url !== currentImage ? styles.blurred : ''
+                  }`}
+                  draggable={false}
+                />
+              </div>
             ))}
           </div>
         )}
