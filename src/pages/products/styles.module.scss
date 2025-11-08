@@ -1,17 +1,65 @@
+@use 'sass:color';
 @use '@/styles/colors' as *;
 @use '@/styles/_breakpoints' as *;
 
 .root {
   padding: 1rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 
   @include respond-to(md) {
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding: 2rem 2rem;
   }
 
   @include respond-to(lg) {
-    padding-left: 10%;
-    padding-right: 10%;
+    padding: 3rem 4rem;
+  }
+}
+
+// Breadcrumb navigation
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+  color: #666;
+
+  @include respond-to(md) {
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  a {
+    color: $primary-green;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    font-weight: 500;
+
+    &:hover {
+      color: color.adjust($primary-green, $lightness: -10%);
+      text-decoration: underline;
+    }
+  }
+
+  .separator {
+    color: #999;
+    margin: 0 0.25rem;
+  }
+
+  .current {
+    color: $secondary-black;
+    font-weight: 600;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    @include respond-to(md) {
+      max-width: 500px;
+    }
   }
 }
 

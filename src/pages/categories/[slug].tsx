@@ -2,6 +2,7 @@ import { ICategory, IProduct } from '@/models/common/types'
 import { CategoryService, ProductService } from '@/services'
 import { GetServerSideProps } from 'next'
 import ProductList from '@/components/ProductList'
+import Link from 'next/link'
 import styles from './styles.module.scss'
 
 interface IProps {
@@ -12,14 +13,31 @@ interface IProps {
 const Category = ({ category, products }: IProps) => {
   return (
     <section className={styles.root}>
+      {/* Breadcrumb Navigation */}
+      <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+        <Link href="/">Home</Link>
+        <span className={styles.separator}>/</span>
+        <Link href="/products">Products</Link>
+        <span className={styles.separator}>/</span>
+        <span className={styles.current}>{category.name}</span>
+      </nav>
+
+      {/* Category Header */}
       <div className={styles.header}>
         <h1 className={styles.title}>{category.name}</h1>
         <p className={styles.subtitle}>
-          {products.length > 0
-            ? `${products.length} product${products.length !== 1 ? 's' : ''} available`
-            : 'No products in this category'}
+          {products.length > 0 ? (
+            <>
+              Discover our collection of <strong>{products.length}</strong>{' '}
+              {products.length === 1 ? 'product' : 'products'} in this category
+            </>
+          ) : (
+            'No products available in this category at the moment'
+          )}
         </p>
       </div>
+
+      {/* Product List */}
       <ProductList products={products} />
     </section>
   )

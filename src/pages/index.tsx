@@ -23,13 +23,6 @@ const Home = ({ categories }: IProps) => {
             Your one-stop destination for premium kitchen products that
             transform your cooking experience
           </p>
-          <p className={styles.heroDescription}>
-            At Kitchen Essentials, we believe that great meals start with great
-            tools. For over a decade, we&apos;ve been curating the finest
-            selection of kitchenware, cookware, and culinary accessories. Our
-            passion for quality and commitment to excellence has made us a
-            trusted name in kitchens across the country.
-          </p>
           <div className={styles.heroFeatures}>
             <div className={styles.feature}>
               <span className={styles.featureIcon}>✨</span>
@@ -126,10 +119,7 @@ const Home = ({ categories }: IProps) => {
               Browse our complete collection and discover the perfect tools for
               your culinary adventures.
             </p>
-            <Link
-              href="/products"
-              className={styles.ctaButton}
-            >
+            <Link href="/products" className={styles.ctaButton}>
               Start Shopping
             </Link>
           </div>

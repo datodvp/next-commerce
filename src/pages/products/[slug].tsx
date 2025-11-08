@@ -6,6 +6,7 @@ import styles from './styles.module.scss'
 import { useState, useRef, useEffect } from 'react'
 import AddToCartDetail from '@/components/ProductCard/AddToCartDetail'
 import { API_CONFIG } from '@/api/config'
+import Link from 'next/link'
 
 interface IProps {
   product: IProduct
@@ -114,6 +115,23 @@ const Product = ({ product }: IProps) => {
   }, [isDragging])
   return (
     <main className={styles.root}>
+      {/* Breadcrumb Navigation */}
+      <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+        <Link href="/">Home</Link>
+        <span className={styles.separator}>/</span>
+        <Link href="/products">Products</Link>
+        {product.category && (
+          <>
+            <span className={styles.separator}>/</span>
+            <Link href={`/categories/${product.category.slug}`}>
+              {product.category.name}
+            </Link>
+          </>
+        )}
+        <span className={styles.separator}>/</span>
+        <span className={styles.current}>{product.title}</span>
+      </nav>
+
       <section className={styles.productDetails}>
         <div className={styles.imageSection}>
           {normalizedImages.length > 0 ? (

@@ -385,7 +385,6 @@
   &.active {
     background-color: color.adjust($primary-green, $lightness: -10%);
     color: $text-white;
-    font-weight: 600;
     position: relative;
 
     @include respond-below(lg) {
