@@ -1,4 +1,4 @@
-import { ICategory, IProduct } from '@/models/common/types'
+import { IProduct } from '@/models/common/types'
 import { CategoryService, ProductService } from '@/services'
 import { GetServerSideProps } from 'next'
 import ProductList from '@/components/ProductList'
@@ -25,7 +25,8 @@ const Products = ({ products }: IProps) => {
         <p className={styles.subtitle}>
           {products.length > 0 ? (
             <>
-              Discover our complete collection of <strong>{products.length}</strong>{' '}
+              Discover our complete collection of{' '}
+              <strong>{products.length}</strong>{' '}
               {products.length === 1 ? 'product' : 'products'}
             </>
           ) : (
@@ -65,4 +66,3 @@ export const getServerSideProps: GetServerSideProps = async () => {
 }
 
 export default Products
-
