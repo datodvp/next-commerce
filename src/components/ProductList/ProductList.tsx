@@ -10,7 +10,7 @@ interface IProps {
 const ProductList = ({ products }: IProps) => {
   if (!products || products.length === 0) {
     return (
-      <section className={styles.root}>
+      <section className={styles.emptyContainer}>
         <EmptyState
           title="No Products Found"
           message="We couldn't find any products matching your search."

@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
     BASE: '/products',
     BY_SLUG: (slug: string) => `/products/slug/${slug}`,
     BY_CATEGORY: (categoryId: number) => `/products/category/${categoryId}`,
+    SEARCH: (query: string) => `/products?search=${encodeURIComponent(query)}`,
   },
   CATEGORIES: {
     BASE: '/categories',

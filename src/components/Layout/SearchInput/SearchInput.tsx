@@ -9,46 +9,53 @@ const SearchInput = () => {
   const router = useRouter()
   const [inputValue, setInputValue] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+  const isOnSearchPage = router.pathname === '/search'
+  const lastSyncedQueryRef = useRef<string>('')
+  const skipNextSyncRef = useRef(false)
   
-  // Debounce the input value (300ms delay)
+  // Debounce the input value (400ms delay)
   const debouncedSearchQuery = useDebounce(inputValue, 400)
 
-  // Initialize input value from URL on mount
+  // Sync input with URL when on search page (only sync from URL to input, not vice versa)
   useEffect(() => {
-    const query = (router.query.search as string) || ''
-    setInputValue(query)
-  }, [router.query.search])
-
-  // Update URL when debounced value changes
-  useEffect(() => {
-    // Skip if debounced value matches current URL query (prevents unnecessary updates)
-    const currentQuery = (router.query.search as string) || ''
-    if (debouncedSearchQuery.trim() === currentQuery) {
-      return
+    if (isOnSearchPage) {
+      const query = (router.query.q as string) || ''
+      
+      // Only sync if URL changed externally (not from our own navigation)
+      if (query !== lastSyncedQueryRef.current && !skipNextSyncRef.current) {
+        setInputValue(query)
+        lastSyncedQueryRef.current = query
+      }
+      
+      // Reset skip flag after sync check
+      skipNextSyncRef.current = false
     }
+  }, [router.query.q, isOnSearchPage])
 
-    // Update URL query parameter without page reload
-    if (debouncedSearchQuery.trim()) {
+  // Navigate to search page when debounced value changes (works from any page)
+  useEffect(() => {
+    const trimmedQuery = debouncedSearchQuery.trim()
+    const currentQuery = (router.query.q as string) || ''
+
+    // If we have a search query and it's different from current URL, navigate to search
+    if (trimmedQuery && trimmedQuery !== currentQuery) {
+      skipNextSyncRef.current = true // Skip syncing back since we're navigating
+      lastSyncedQueryRef.current = trimmedQuery
       router.push(
         {
-          pathname: router.pathname === '/' ? '/' : '/',
-          query: { ...router.query, search: debouncedSearchQuery.trim() },
+          pathname: '/search',
+          query: { q: trimmedQuery },
         },
         undefined,
-        { shallow: true },
+        { shallow: false },
       )
-    } else {
-      // Remove search param if empty
-      const restQuery = { ...router.query }
-      delete restQuery.search
-      router.push(
-        {
-          pathname: router.pathname,
-          query: restQuery,
-        },
-        undefined,
-        { shallow: true },
-      )
+    } 
+    // Only redirect to home if we're on search page, query becomes empty, and there was a previous query
+    else if (!trimmedQuery && isOnSearchPage && currentQuery) {
+      skipNextSyncRef.current = true
+      lastSyncedQueryRef.current = ''
+      // User cleared the search on search page, go to home
+      router.push('/')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchQuery])
@@ -61,27 +68,15 @@ const SearchInput = () => {
     if (e.key === 'Enter') {
       e.preventDefault()
       inputRef.current?.blur()
-      // Immediately update URL on Enter (bypass debounce)
-      if (inputValue.trim()) {
-        router.push(
-          {
-            pathname: router.pathname === '/' ? '/' : '/',
-            query: { ...router.query, search: inputValue.trim() },
-          },
-          undefined,
-          { shallow: true },
-        )
-      } else {
-        const restQuery = { ...router.query }
-        delete restQuery.search
-        router.push(
-          {
-            pathname: router.pathname,
-            query: restQuery,
-          },
-          undefined,
-          { shallow: true },
-        )
+      // Navigate to search page when Enter is pressed (if not empty)
+      const trimmedValue = inputValue.trim()
+      if (trimmedValue) {
+        skipNextSyncRef.current = true
+        lastSyncedQueryRef.current = trimmedValue
+        router.push({
+          pathname: '/search',
+          query: { q: trimmedValue },
+        })
       }
     }
   }

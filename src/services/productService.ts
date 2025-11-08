@@ -58,5 +58,36 @@ export class ProductService {
       throw apiError
     }
   }
+
+  /**
+   * Search products by query string
+   * Currently implements client-side filtering. Can be replaced with backend endpoint later.
+   * @param query - Search query string
+   */
+  static async search(query: string): Promise<IProduct[]> {
+    try {
+      // Fetch all products and filter client-side for now
+      // TODO: Replace with backend search endpoint when available
+      const allProducts = await this.getAll()
+      
+      if (!query || !query.trim()) {
+        return []
+      }
+
+      const searchQuery = query.toLowerCase().trim()
+      
+      // Filter products by title, description, or category name
+      return allProducts.filter((product) => {
+        const titleMatch = product.title?.toLowerCase().includes(searchQuery)
+        const descriptionMatch = product.description?.toLowerCase().includes(searchQuery)
+        const categoryMatch = product.category?.name?.toLowerCase().includes(searchQuery)
+        
+        return titleMatch || descriptionMatch || categoryMatch
+      })
+    } catch (error) {
+      const apiError = ApiError.fromError(error)
+      throw apiError
+    }
+  }
 }
 

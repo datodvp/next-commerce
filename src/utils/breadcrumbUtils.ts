@@ -40,3 +40,16 @@ export const createCategoryBreadcrumbs = (
   ]
 }
 
+/**
+ * Creates breadcrumb items for search page
+ */
+export const createSearchBreadcrumbs = (
+  searchQuery: string,
+): BreadcrumbItem[] => {
+  return [
+    { label: 'Home', href: '/' },
+    { label: 'Search', href: '/search' },
+    { label: `"${searchQuery}"` },
+  ]
+}
+
