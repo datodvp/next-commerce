@@ -5,16 +5,21 @@ interface UseImageGalleryProps {
 }
 
 export const useImageGallery = ({ images }: UseImageGalleryProps) => {
-  const [currentImage, setCurrentImage] = useState<string>(
-    images[0]?.url || '',
-  )
+  const [currentImage, setCurrentImage] = useState<string>(images[0]?.url || '')
   const [isDragging, setIsDragging] = useState(false)
   const [startX, setStartX] = useState(0)
   const [scrollLeft, setScrollLeft] = useState(0)
   const hasMovedRef = useRef(false)
   const thumbnailContainerRef = useRef<HTMLDivElement>(null)
+  const isOverThumbnailRef = useRef(false)
+  const hasUserSelectedImageRef = useRef(false)
+  const initializedRef = useRef(false)
+  const imagesUrlsRef = useRef<string>('')
+  const currentImageRef = useRef<string>(images[0]?.url || '')
 
   const updatePreviewImage = (imageUrl: string) => {
+    hasUserSelectedImageRef.current = true
+    currentImageRef.current = imageUrl
     setCurrentImage(imageUrl)
   }
 
@@ -24,7 +29,7 @@ export const useImageGallery = ({ images }: UseImageGalleryProps) => {
     if (target.closest('[data-thumbnail="true"]')) {
       return
     }
-    
+
     if (!thumbnailContainerRef.current) return
     setIsDragging(true)
     hasMovedRef.current = false
@@ -55,14 +60,27 @@ export const useImageGallery = ({ images }: UseImageGalleryProps) => {
   }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDragging || !thumbnailContainerRef.current) return
-    
-    // Don't handle drag if mouse is over a thumbnail
+    // Check if mouse is over a thumbnail first - if so, don't handle drag
     const target = e.target as HTMLElement
-    if (target.closest('[data-thumbnail="true"]')) {
+    const isOverThumbnail = target.closest('[data-thumbnail="true"]') !== null
+    isOverThumbnailRef.current = isOverThumbnail
+
+    if (isOverThumbnail) {
+      // If we were dragging, stop it when entering thumbnail area
+      if (isDragging) {
+        setIsDragging(false)
+        hasMovedRef.current = false
+        if (thumbnailContainerRef.current) {
+          thumbnailContainerRef.current.style.cursor = 'default'
+          thumbnailContainerRef.current.style.userSelect = 'auto'
+        }
+      }
+      // Don't prevent default or handle drag when over thumbnail
       return
     }
-    
+
+    if (!isDragging || !thumbnailContainerRef.current) return
+
     e.preventDefault()
     const x = e.pageX - thumbnailContainerRef.current.offsetLeft
     const walk = (x - startX) * 2
@@ -80,14 +98,34 @@ export const useImageGallery = ({ images }: UseImageGalleryProps) => {
     }
   }
 
-  const handleThumbnailMouseEnter = (imageUrl: string, e?: React.MouseEvent) => {
+  const handleThumbnailMouseEnter = (
+    imageUrl: string,
+    e?: React.MouseEvent,
+  ) => {
+    isOverThumbnailRef.current = true
+
+    // Stop any active dragging
+    if (isDragging) {
+      setIsDragging(false)
+      hasMovedRef.current = false
+      if (thumbnailContainerRef.current) {
+        thumbnailContainerRef.current.style.cursor = 'default'
+        thumbnailContainerRef.current.style.userSelect = 'auto'
+      }
+    }
+
     if (e) {
       e.stopPropagation()
     }
-    // Update preview on hover, but only if not actively dragging
-    // hasMovedRef is only used to prevent click events, not hover
-    if (!isDragging) {
-      updatePreviewImage(imageUrl)
+    // Always update preview on hover, regardless of drag state
+    // This ensures hover works even if dragging was triggered
+    updatePreviewImage(imageUrl)
+  }
+
+  const handleThumbnailMouseLeave = (e?: React.MouseEvent) => {
+    isOverThumbnailRef.current = false
+    if (e) {
+      e.stopPropagation()
     }
   }
 
@@ -112,12 +150,41 @@ export const useImageGallery = ({ images }: UseImageGalleryProps) => {
     }
   }, [isDragging])
 
-  // Set initial image
+  // Initialize image only once on mount, or reset if images array actually changed
+  // Never reset if user has manually selected an image (via hover or click)
   useEffect(() => {
-    if (images.length > 0 && images[0]?.url) {
+    if (images.length === 0) return
+
+    const imageUrls = images.map((img) => img.url)
+    const imageUrlsString = JSON.stringify(imageUrls.sort())
+
+    // Check if images array content has actually changed (not just reference)
+    const imagesChanged = imagesUrlsRef.current !== imageUrlsString
+
+    // Only set initial image if:
+    // 1. Not yet initialized, OR
+    // 2. Images changed AND user hasn't manually selected an image, OR
+    // 3. Current image is invalid (empty or not in images array) AND user hasn't selected
+    if (!initializedRef.current) {
+      // First time initialization
+      currentImageRef.current = images[0].url
       setCurrentImage(images[0].url)
+      initializedRef.current = true
+      imagesUrlsRef.current = imageUrlsString
+    } else if (imagesChanged) {
+      // Images array content changed - check current image from ref to avoid stale closure
+      const currentImageValid =
+        currentImageRef.current && imageUrls.includes(currentImageRef.current)
+
+      if (!hasUserSelectedImageRef.current || !currentImageValid) {
+        // Reset only if user hasn't selected an image, or current image is invalid
+        currentImageRef.current = images[0].url
+        setCurrentImage(images[0].url)
+        hasUserSelectedImageRef.current = false // Reset flag since we're resetting
+      }
+      imagesUrlsRef.current = imageUrlsString
     }
-  }, [images])
+  }, [images]) // Only depend on images, not currentImage
 
   return {
     currentImage,
@@ -128,6 +195,6 @@ export const useImageGallery = ({ images }: UseImageGalleryProps) => {
     handleMouseMove,
     handleThumbnailClick,
     handleThumbnailMouseEnter,
+    handleThumbnailMouseLeave,
   }
 }
-

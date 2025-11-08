@@ -66,10 +66,12 @@
   max-width: 100%;
   cursor: grab;
   user-select: none;
+  position: relative;
 
   &:active {
     cursor: grabbing;
   }
+
 
   @include respond-to(md) {
     gap: 0.625rem;
@@ -86,6 +88,12 @@
   flex-shrink: 0;
   cursor: pointer;
   pointer-events: auto;
+  position: relative;
+  z-index: 1;
+  
+  &:hover {
+    z-index: 2;
+  }
 }
 
 .thumbnail {

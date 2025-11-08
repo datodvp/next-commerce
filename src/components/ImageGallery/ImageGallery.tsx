@@ -1,3 +1,4 @@
+import React from 'react'
 import Image from 'next/image'
 import { useImageGallery } from '@/hooks/useImageGallery'
 import { normalizeImageUrl } from '@/utils/imageUtils'
@@ -23,6 +24,7 @@ const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
     handleMouseMove,
     handleThumbnailClick,
     handleThumbnailMouseEnter,
+    handleThumbnailMouseLeave,
   } = useImageGallery({ images: normalizedImages })
 
   if (normalizedImages.length === 0) {
@@ -70,6 +72,14 @@ const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
                 className={styles.thumbnailWrapper}
                 data-thumbnail="true"
                 onMouseEnter={(e) => {
+                  e.stopPropagation()
+                  handleThumbnailMouseEnter(image.url, e)
+                }}
+                onMouseLeave={(e) => {
+                  handleThumbnailMouseLeave(e)
+                }}
+                onMouseOver={(e) => {
+                  // Backup handler in case onMouseEnter doesn't fire
                   e.stopPropagation()
                   handleThumbnailMouseEnter(image.url, e)
                 }}
