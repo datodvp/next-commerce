@@ -127,7 +127,7 @@ const Home = ({ categories }: IProps) => {
               your culinary adventures.
             </p>
             <Link
-              href={`/categories/${categories[0].slug}`}
+              href="/products"
               className={styles.ctaButton}
             >
               Start Shopping

@@ -17,7 +17,7 @@ const ProductList = ({ products }: IProps) => {
             We couldn&apos;t find any products matching your search.
           </p>
           <p className={styles.message}>
-            <Link href="/" className={styles.link}>
+            <Link href="/products" className={styles.link}>
               Browse all products
             </Link>{' '}
             or try a different search term.

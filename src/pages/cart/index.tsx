@@ -32,7 +32,7 @@ const Cart = () => {
           <p className={styles.message}>
             Looks like you haven&apos;t added anything to your cart yet.
           </p>
-          <Link href="/" className={styles.link}>
+          <Link href="/products" className={styles.link}>
             Start Shopping
           </Link>
         </div>
@@ -82,7 +82,7 @@ const Cart = () => {
         >
           Proceed to Checkout
         </button>
-        <Link href="/" className={styles.continueShopping}>
+        <Link href="/products" className={styles.continueShopping}>
           Continue Shopping
         </Link>
       </div>

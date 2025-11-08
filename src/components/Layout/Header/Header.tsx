@@ -129,6 +129,13 @@ const Header = ({ categories }: IProps) => {
           >
             <span>Home</span>
           </Link>
+          <Link
+            href="/products"
+            className={`${styles.category} ${asPath === '/products' ? styles.active : ''}`}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <span>Products</span>
+          </Link>
           {categories?.slice(0, 6).map((category) => {
             const categoryPath = `/categories/${category.slug}`
             const isActive =
